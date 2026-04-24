@@ -58,26 +58,6 @@ p{color:#fff}
   will-change:left,top;opacity:0;
 }
 
-/* ── OWL CURSOR SPRITE — 10×10px neon silhouette ─── */
-#owl-cursor{
-  position:fixed;
-  width:22px;height:22px;
-  pointer-events:none;
-  z-index:99997;
-  /* Start hidden, appears after first mousemove */
-  opacity:0;
-  transition:opacity .4s;
-  will-change:left,top;
-  /* Positioned by JS: top-left corner at cursor coords */
-}
-#owl-cursor svg{
-  width:22px;height:22px;
-  overflow:visible;
-  filter:
-    drop-shadow(0 0 2px var(--owl-glow1))
-    drop-shadow(0 0 5px var(--owl-glow2))
-    drop-shadow(0 0 10px rgba(120,60,255,.3));
-}
 
 /* ── LAYOUT ─────────────────────────────── */
 .wrap{max-width:80%;margin:0 auto}
@@ -158,14 +138,6 @@ nav{display:flex;align-items:center;gap:32px}
   display:flex;align-items:flex-end;
   /* Left-align content block */
   justify-content:flex-start;
-}
-.hero-video-wrap{position:absolute;inset:0;z-index:0;overflow:hidden}
-.hero-video-wrap iframe{
-  position:absolute;top:50%;left:50%;
-  width:177.78vh;height:100vh;
-  min-width:100vw;min-height:56.25vw;
-  transform:translate(-50%,-50%);
-  pointer-events:none;mix-blend-mode:multiply;opacity:.2;border:none
 }
 .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,rgba(39,11,61,.55) 0%,rgba(10,10,10,.35) 100%)}
 .hero-grid{
@@ -510,6 +482,44 @@ footer{padding:64px 0 36px}
   .footer-bottom{flex-direction:column;gap:8px;text-align:center}
   .lib-stats{grid-template-columns:1fr}
 }
+
+/* ── HERO OWL ON BRANCH ──────────────────────────────── */
+.hero-owl-wrap {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 52%;
+  max-width: 680px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+.hero-owl-svg {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  /* Subtle breathing float */
+  animation: owl-breathe 5s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+@keyframes owl-breathe {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  30%       { transform: translateY(-8px) rotate(0.4deg); }
+  60%       { transform: translateY(-4px) rotate(-0.2deg); }
+}
+@media(max-width:960px) {
+  .hero-owl-wrap {
+    width: 70%;
+    opacity: 0.5;
+  }
+}
+@media(max-width:640px) {
+  .hero-owl-wrap { display: none; }
+}
+
 </style>
 </head>
 <body>
@@ -518,34 +528,6 @@ footer{padding:64px 0 36px}
 <div id="cur-dot"></div>
 <div id="cur-trail"></div>
 
-<!-- Owl cursor sprite: tiny 22×22 neon owl silhouette -->
-<div id="owl-cursor">
-  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <!-- Simplified owl silhouette: body, ears, eyes, beak -->
-    <!-- Body/head circle -->
-    <ellipse cx="50" cy="58" rx="28" ry="32" fill="none"
-      stroke="rgba(228,215,255,0.9)" stroke-width="4"/>
-    <!-- Left ear -->
-    <polygon points="28,32 22,10 38,26" fill="none"
-      stroke="rgba(228,215,255,0.9)" stroke-width="3.5" stroke-linejoin="round"/>
-    <!-- Right ear -->
-    <polygon points="72,32 78,10 62,26" fill="none"
-      stroke="rgba(228,215,255,0.9)" stroke-width="3.5" stroke-linejoin="round"/>
-    <!-- Left eye -->
-    <circle cx="38" cy="54" r="8" fill="none"
-      stroke="rgba(228,215,255,0.95)" stroke-width="3"/>
-    <!-- Right eye -->
-    <circle cx="62" cy="54" r="8" fill="none"
-      stroke="rgba(228,215,255,0.95)" stroke-width="3"/>
-    <!-- Beak -->
-    <polygon points="50,62 44,70 56,70" fill="rgba(228,215,255,0.8)"/>
-    <!-- Wings hint -->
-    <path d="M22,64 Q10,72 18,82" fill="none"
-      stroke="rgba(228,215,255,0.6)" stroke-width="3" stroke-linecap="round"/>
-    <path d="M78,64 Q90,72 82,82" fill="none"
-      stroke="rgba(228,215,255,0.6)" stroke-width="3" stroke-linecap="round"/>
-  </svg>
-</div>
 
 <!-- HEADER -->
 <header id="hdr">
@@ -595,14 +577,235 @@ footer{padding:64px 0 36px}
 
   <!-- HERO: title bottom-left, Tálamo style -->
   <section class="hero">
-    <div class="hero-video-wrap">
-      <iframe src="https://www.youtube.com/embed/HXJEakm65FI?si=-uwWxgasnBSa9BwZ&amp;controls=0&amp;autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=HXJEakm65FI&amp;playsinline=1&amp;rel=0&amp;modestbranding=1"
-        title="Background" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    </div>
     <div class="hero-overlay"></div>
     <div class="hero-grid"></div>
+
+<!-- Hero: Owl on branch — 3D-simil illustration -->
+<div class="hero-owl-wrap">
+  <svg class="hero-owl-svg" viewBox="0 0 700 620" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+      <!-- Body gradient: dark back, lit front -->
+      <radialGradient id="bodyGrad" cx="42%" cy="38%" r="58%" fx="38%" fy="32%">
+        <stop offset="0%"   stop-color="#d4c9f0"/>
+        <stop offset="28%"  stop-color="#a08ac8"/>
+        <stop offset="60%"  stop-color="#5a3d8a"/>
+        <stop offset="100%" stop-color="#1e0f35"/>
+      </radialGradient>
+      <!-- Head gradient -->
+      <radialGradient id="headGrad" cx="44%" cy="36%" r="56%" fx="40%" fy="30%">
+        <stop offset="0%"   stop-color="#e0d6f5"/>
+        <stop offset="30%"  stop-color="#b09ad8"/>
+        <stop offset="65%"  stop-color="#6b4aaa"/>
+        <stop offset="100%" stop-color="#250d40"/>
+      </radialGradient>
+      <!-- Wing left shadow -->
+      <radialGradient id="wingLGrad" cx="60%" cy="30%" r="70%">
+        <stop offset="0%"   stop-color="#9070c0"/>
+        <stop offset="100%" stop-color="#18082a"/>
+      </radialGradient>
+      <!-- Wing right slightly lighter -->
+      <radialGradient id="wingRGrad" cx="35%" cy="30%" r="70%">
+        <stop offset="0%"   stop-color="#7a58b0"/>
+        <stop offset="100%" stop-color="#140622"/>
+      </radialGradient>
+      <!-- Belly: warm white feathers -->
+      <radialGradient id="bellyGrad" cx="50%" cy="42%" r="52%">
+        <stop offset="0%"   stop-color="#f2eeff"/>
+        <stop offset="55%"  stop-color="#c8b8e8"/>
+        <stop offset="100%" stop-color="#7a5aaa"/>
+      </radialGradient>
+      <!-- Eye iris -->
+      <radialGradient id="eyeGrad" cx="38%" cy="35%" r="62%">
+        <stop offset="0%"   stop-color="#ffe87a"/>
+        <stop offset="40%"  stop-color="#e8a820"/>
+        <stop offset="75%"  stop-color="#c07010"/>
+        <stop offset="100%" stop-color="#603800"/>
+      </radialGradient>
+      <!-- Eye glow -->
+      <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="rgba(255,240,160,0.6)"/>
+        <stop offset="100%" stop-color="rgba(255,200,50,0)"/>
+      </radialGradient>
+      <!-- Branch gradient -->
+      <linearGradient id="branchGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%"   stop-color="#7a5c3a"/>
+        <stop offset="40%"  stop-color="#5a3e22"/>
+        <stop offset="100%" stop-color="#2e1c08"/>
+      </linearGradient>
+      <!-- Branch highlight -->
+      <linearGradient id="branchHi" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%"   stop-color="rgba(200,160,100,0.5)"/>
+        <stop offset="100%" stop-color="rgba(200,160,100,0)"/>
+      </linearGradient>
+      <!-- Foot/talon -->
+      <linearGradient id="talonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#b0956a"/>
+        <stop offset="100%" stop-color="#5a3e1a"/>
+      </linearGradient>
+      <!-- Feather texture overlay -->
+      <pattern id="featherPat" x="0" y="0" width="18" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(-15)">
+        <ellipse cx="9" cy="7" rx="7" ry="5.5" fill="none" stroke="rgba(0,0,0,0.12)" stroke-width="0.8"/>
+      </pattern>
+      <!-- Belly feather pattern -->
+      <pattern id="bellyPat" x="0" y="0" width="14" height="11" patternUnits="userSpaceOnUse">
+        <ellipse cx="7" cy="5.5" rx="5.5" ry="4" fill="none" stroke="rgba(100,70,180,0.18)" stroke-width="0.7"/>
+      </pattern>
+      <!-- Shadow under owl -->
+      <radialGradient id="shadowGrad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="rgba(10,0,30,0.55)"/>
+        <stop offset="100%" stop-color="rgba(10,0,30,0)"/>
+      </radialGradient>
+      <!-- Ear tuft grad -->
+      <linearGradient id="tuftGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+        <stop offset="0%"   stop-color="#8060b8"/>
+        <stop offset="100%" stop-color="#2a1050"/>
+      </linearGradient>
+      <!-- Specular highlight -->
+      <radialGradient id="specGrad" cx="35%" cy="25%" r="45%">
+        <stop offset="0%"   stop-color="rgba(255,255,255,0.22)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </radialGradient>
+    </defs>
+
+    <!-- ── BRANCH ─────────────────────────────── -->
+    <!-- Main branch extending right -->
+    <path d="M0,540 Q180,520 340,510 Q480,502 700,495" 
+          fill="none" stroke="url(#branchGrad)" stroke-width="28" stroke-linecap="round"/>
+    <!-- Branch top highlight -->
+    <path d="M0,532 Q180,513 340,503 Q480,495 700,488" 
+          fill="none" stroke="url(#branchHi)" stroke-width="10" stroke-linecap="round"/>
+    <!-- Branch texture lines -->
+    <path d="M60,535 Q100,530 140,535" fill="none" stroke="rgba(40,20,5,0.4)" stroke-width="1.5"/>
+    <path d="M180,528 Q220,524 260,529" fill="none" stroke="rgba(40,20,5,0.4)" stroke-width="1.5"/>
+    <path d="M280,524 Q320,521 360,525" fill="none" stroke="rgba(40,20,5,0.3)" stroke-width="1.2"/>
+    <!-- Small twig -->
+    <path d="M420,507 Q440,490 460,472" fill="none" stroke="url(#branchGrad)" stroke-width="8" stroke-linecap="round"/>
+    <path d="M460,472 Q472,460 480,448" fill="none" stroke="url(#branchGrad)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M440,485 Q458,478 474,466" fill="none" stroke="url(#branchGrad)" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- ── OWL SHADOW on branch ─────────────────── -->
+    <ellipse cx="248" cy="518" rx="105" ry="14" fill="url(#shadowGrad)" opacity="0.7"/>
+
+    <!-- ── TALONS / FEET ─────────────────────────── -->
+    <!-- Left foot -->
+    <path d="M200,510 L190,524 M200,510 L200,526 M200,510 L212,522 M200,510 L218,514" 
+          fill="none" stroke="url(#talonGrad)" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- Right foot -->
+    <path d="M290,507 L280,521 M290,507 L290,523 M290,507 L302,519 M290,507 L308,511" 
+          fill="none" stroke="url(#talonGrad)" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- Leg left -->
+    <path d="M210,472 Q208,492 200,510" fill="none" stroke="url(#talonGrad)" stroke-width="7" stroke-linecap="round"/>
+    <!-- Leg right -->
+    <path d="M278,470 Q282,490 290,507" fill="none" stroke="url(#talonGrad)" stroke-width="7" stroke-linecap="round"/>
+
+    <!-- ── TAIL FEATHERS ──────────────────────────── -->
+    <path d="M170,460 Q190,490 200,515 Q220,508 240,510 Q260,508 280,512 Q290,488 300,462"
+          fill="#3a1f6a" opacity="0.85"/>
+    <path d="M178,462 Q195,488 202,512" fill="none" stroke="rgba(140,100,200,0.5)" stroke-width="1.5"/>
+    <path d="M220,463 Q232,490 242,510" fill="none" stroke="rgba(140,100,200,0.4)" stroke-width="1.5"/>
+    <path d="M260,462 Q272,488 282,510" fill="none" stroke="rgba(140,100,200,0.4)" stroke-width="1.5"/>
+
+    <!-- ── WINGS ───────────────────────────────────── -->
+    <!-- Left wing (partially behind body, darker) -->
+    <path d="M168,350 Q130,390 118,440 Q125,470 155,480 Q185,470 210,460 Q220,420 218,380 Q208,355 168,350Z"
+          fill="url(#wingLGrad)"/>
+    <!-- Wing feather edges left -->
+    <path d="M128,432 Q138,445 152,455" fill="none" stroke="rgba(180,140,240,0.45)" stroke-width="1.8"/>
+    <path d="M125,415 Q134,430 148,440" fill="none" stroke="rgba(180,140,240,0.35)" stroke-width="1.5"/>
+    <path d="M122,398 Q132,414 145,424" fill="none" stroke="rgba(180,140,240,0.3)" stroke-width="1.3"/>
+    <!-- Left wing feather texture -->
+    <rect x="118" y="350" width="100" height="130" fill="url(#featherPat)" opacity="0.5"/>
+
+    <!-- Right wing (slightly lit) -->
+    <path d="M320,350 Q360,390 372,440 Q366,470 335,480 Q305,470 280,460 Q270,420 272,380 Q282,355 320,350Z"
+          fill="url(#wingRGrad)"/>
+    <!-- Wing feather edges right -->
+    <path d="M362,432 Q352,445 338,455" fill="none" stroke="rgba(180,140,240,0.4)" stroke-width="1.8"/>
+    <path d="M365,415 Q355,430 341,440" fill="none" stroke="rgba(180,140,240,0.3)" stroke-width="1.5"/>
+    <path d="M367,398 Q357,414 344,424" fill="none" stroke="rgba(180,140,240,0.28)" stroke-width="1.3"/>
+    <!-- Right wing texture -->
+    <rect x="272" y="350" width="100" height="130" fill="url(#featherPat)" opacity="0.45"/>
+
+    <!-- ── BODY ────────────────────────────────────── -->
+    <ellipse cx="245" cy="420" rx="95" ry="118" fill="url(#bodyGrad)"/>
+    <!-- Body feather texture -->
+    <ellipse cx="245" cy="420" rx="95" ry="118" fill="url(#featherPat)" opacity="0.55"/>
+    <!-- Body specular -->
+    <ellipse cx="245" cy="420" rx="95" ry="118" fill="url(#specGrad)"/>
+
+    <!-- ── BELLY (light front feathers) ──────────── -->
+    <ellipse cx="245" cy="435" rx="58" ry="75" fill="url(#bellyGrad)"/>
+    <!-- Belly scale/feather pattern -->
+    <ellipse cx="245" cy="435" rx="58" ry="75" fill="url(#bellyPat)" opacity="0.8"/>
+    <!-- Belly center line subtle -->
+    <path d="M245,368 Q244,410 245,508" fill="none" stroke="rgba(120,90,180,0.25)" stroke-width="1"/>
+
+    <!-- ── HEAD ────────────────────────────────────── -->
+    <ellipse cx="245" cy="300" rx="82" ry="78" fill="url(#headGrad)"/>
+    <!-- Head feather texture -->
+    <ellipse cx="245" cy="300" rx="82" ry="78" fill="url(#featherPat)" opacity="0.5"/>
+    <!-- Head specular -->
+    <ellipse cx="245" cy="300" rx="82" ry="78" fill="url(#specGrad)" opacity="0.7"/>
+
+    <!-- ── FACIAL DISC (heart-shaped light area) ──── -->
+    <path d="M200,278 Q220,260 245,268 Q270,260 290,278 Q300,305 285,330 Q268,348 245,352 Q222,348 205,330 Q190,305 200,278Z"
+          fill="rgba(220,205,245,0.55)"/>
+    <!-- Facial disc border -->
+    <path d="M200,278 Q220,260 245,268 Q270,260 290,278 Q300,305 285,330 Q268,348 245,352 Q222,348 205,330 Q190,305 200,278Z"
+          fill="none" stroke="rgba(180,150,230,0.5)" stroke-width="1.5"/>
+
+    <!-- ── EAR TUFTS ───────────────────────────────── -->
+    <!-- Left tuft -->
+    <path d="M192,248 Q182,228 188,210 Q196,228 202,244Z" fill="url(#tuftGrad)"/>
+    <path d="M188,240 Q181,222 186,206" fill="none" stroke="rgba(160,120,220,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Right tuft -->
+    <path d="M298,248 Q308,228 302,210 Q294,228 288,244Z" fill="url(#tuftGrad)"/>
+    <path d="M302,240 Q309,222 304,206" fill="none" stroke="rgba(160,120,220,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- ── EYES ────────────────────────────────────── -->
+    <!-- Left eye socket/ring -->
+    <circle cx="218" cy="300" r="26" fill="rgba(10,0,25,0.85)"/>
+    <circle cx="218" cy="300" r="22" fill="url(#eyeGrad)"/>
+    <!-- Left eye glow halo -->
+    <circle cx="218" cy="300" r="28" fill="url(#eyeGlow)"/>
+    <!-- Left pupil -->
+    <circle cx="218" cy="300" r="10" fill="rgba(5,0,15,0.95)"/>
+    <!-- Left pupil glint -->
+    <circle cx="213" cy="294" r="4" fill="rgba(255,255,255,0.85)"/>
+    <circle cx="224" cy="305" r="2" fill="rgba(255,255,255,0.35)"/>
+    <!-- Left eye ring -->
+    <circle cx="218" cy="300" r="22" fill="none" stroke="rgba(80,50,20,0.6)" stroke-width="1.5"/>
+
+    <!-- Right eye socket/ring -->
+    <circle cx="272" cy="300" r="26" fill="rgba(10,0,25,0.85)"/>
+    <circle cx="272" cy="300" r="22" fill="url(#eyeGrad)"/>
+    <!-- Right eye glow -->
+    <circle cx="272" cy="300" r="28" fill="url(#eyeGlow)"/>
+    <!-- Right pupil -->
+    <circle cx="272" cy="300" r="10" fill="rgba(5,0,15,0.95)"/>
+    <!-- Right glint -->
+    <circle cx="267" cy="294" r="4" fill="rgba(255,255,255,0.85)"/>
+    <circle cx="278" cy="305" r="2" fill="rgba(255,255,255,0.35)"/>
+    <!-- Right eye ring -->
+    <circle cx="272" cy="300" r="22" fill="none" stroke="rgba(80,50,20,0.6)" stroke-width="1.5"/>
+
+    <!-- Eye bridge feathers -->
+    <path d="M240,285 Q245,282 250,285" fill="none" stroke="rgba(180,150,230,0.6)" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- ── BEAK ─────────────────────────────────────── -->
+    <path d="M237,318 Q245,310 253,318 Q252,332 245,336 Q238,332 237,318Z" fill="#c8a040"/>
+    <path d="M237,318 Q245,328 253,318" fill="none" stroke="rgba(100,70,10,0.7)" stroke-width="1.2"/>
+    <!-- Beak highlight -->
+    <path d="M241,316 Q245,312 249,316" fill="none" stroke="rgba(255,220,120,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- ── OVERALL DEPTH SHADOW (right side) ─────── -->
+    <ellipse cx="310" cy="390" rx="40" ry="110" fill="rgba(10,0,30,0.28)" opacity="0.7"/>
+
+    <!-- ── SUBTLE GLOW around owl ─────────────────── -->
+    <ellipse cx="245" cy="390" rx="120" ry="150"
+             fill="none" stroke="rgba(140,90,220,0.12)" stroke-width="40"/>
+  </svg>
+</div>
     <div class="wrap">
       <div class="hero-content">
         <div class="hero-eyebrow"><div class="hero-dot"></div><span>Owlbox LATAM</span></div>
@@ -899,7 +1102,6 @@ function openCalendly() { window.open('https://calendly.com/owlbox/llamada','_bl
 // ══════════════════════════════════════════════════
 const curDot   = document.getElementById('cur-dot');
 const curTrail = document.getElementById('cur-trail');
-const owlEl    = document.getElementById('owl-cursor');
 
 // Detect touch
 let isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
@@ -916,8 +1118,6 @@ if (!isTouch) {
     curTrail.style.left = x + 'px';
     curTrail.style.top  = y + 'px';
     // Owl cursor follows with slight lag via CSS transition
-    owlEl.style.left = (x - 11) + 'px';
-    owlEl.style.top  = (y - 11) + 'px';
   });
 
   // Scale dot on interactive elements
@@ -927,82 +1127,6 @@ if (!isTouch) {
   });
 }
 
-// ══════════════════════════════════════════════════
-// OWL FLYING CURSOR SPRITE — random idle flight
-// then chases mouse
-// ══════════════════════════════════════════════════
-(function owlFly() {
-  if (isTouch) { owlEl.style.display = 'none'; return; }
-
-  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-  let ox = Math.random() * window.innerWidth;
-  let oy = Math.random() * window.innerHeight;
-  let vx = (Math.random() - 0.5) * 2;
-  let vy = (Math.random() - 0.5) * 2;
-
-  // Mode: 'idle' = random wander, 'chase' = follow cursor
-  let mode = 'idle';
-  let lastMouseMove = 0;
-  let chaseTimer = null;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX;
-    my = e.clientY;
-    lastMouseMove = Date.now();
-    if (mode !== 'chase') {
-      mode = 'chase';
-      clearTimeout(chaseTimer);
-      // Return to idle after 2.5s of no movement
-      chaseTimer = setTimeout(() => { mode = 'idle'; }, 2500);
-    }
-  });
-
-  owlEl.style.opacity  = '1';
-  owlEl.style.position = 'fixed';
-  owlEl.style.transition = 'none'; // raw JS animation
-
-  let lastFrame = 0;
-  function frame(ts) {
-    const dt = Math.min((ts - lastFrame) / 16.67, 3); // cap at 3× for tab switch
-    lastFrame = ts;
-
-    if (mode === 'idle') {
-      // Random wander with slight drift
-      vx += (Math.random() - 0.5) * 0.15 * dt;
-      vy += (Math.random() - 0.5) * 0.15 * dt;
-      // Speed cap
-      const spd = Math.sqrt(vx*vx+vy*vy);
-      if (spd > 1.8) { vx = (vx/spd)*1.8; vy = (vy/spd)*1.8; }
-      // Soft bounce off edges
-      if (ox < 30)  { vx = Math.abs(vx);  }
-      if (ox > window.innerWidth  - 30) { vx = -Math.abs(vx); }
-      if (oy < 30)  { vy = Math.abs(vy);  }
-      if (oy > window.innerHeight - 30) { vy = -Math.abs(vy); }
-      ox += vx * dt;
-      oy += vy * dt;
-    } else {
-      // Chase: lerp toward mouse with slight overshoot
-      const dx = mx - ox, dy = my - oy;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist > 2) {
-        const spd = Math.min(dist * 0.08, 6);
-        vx = (dx/dist) * spd;
-        vy = (dy/dist) * spd;
-        ox += vx * dt;
-        oy += vy * dt;
-      }
-    }
-
-    // Tilt the owl in its direction of travel
-    const angle = Math.atan2(vy, vx) * 180 / Math.PI;
-    owlEl.style.left      = (ox - 11) + 'px';
-    owlEl.style.top       = (oy - 11) + 'px';
-    owlEl.style.transform = 'rotate(' + (angle - 90) + 'deg)';
-
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-})();
 
 // ══════════════════════════════════════════════════
 // HEADER SCROLL
