@@ -578,121 +578,248 @@ footer{padding:64px 0 36px}
     <div class="hero-overlay"></div>
     <div class="hero-grid"></div>
 
-<!-- Hero: Geometric owl on branch from right -->
+<!-- Hero: Geometric owl — low-poly triangulated, no outer ring -->
 <div class="hero-owl-wrap">
-  <svg class="hero-owl-svg" viewBox="0 0 760 640" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+  <svg class="hero-owl-svg" viewBox="0 0 500 700" xmlns="http://www.w3.org/2000/svg" overflow="visible">
     <defs>
-      <filter id="glow-owl" x="-40%" y="-40%" width="180%" height="180%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur"/>
-        <feColorMatrix in="blur" type="matrix"
-          values="0.7 0 0.3 0  0.1
-                  0   0 0.8 0  0.05
-                  0.8 0 1   0  0.3
-                  0   0 0   12 -4" result="colored"/>
-        <feMerge><feMergeNode in="colored"/><feMergeNode in="SourceGraphic"/></feMerge>
+      <filter id="neon" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.8" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
-      <filter id="glow-soft" x="-60%" y="-60%" width="220%" height="220%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur"/>
-        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      <filter id="neon-eye" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
-      <linearGradient id="branchFade" x1="100%" y1="0%" x2="0%" y2="0%">
-        <stop offset="0%"   stop-color="rgba(200,180,255,0.9)"/>
-        <stop offset="60%"  stop-color="rgba(180,140,255,0.6)"/>
-        <stop offset="100%" stop-color="rgba(160,110,255,0)"/>
+      <!-- Branch gradient: opaque at right, fades left -->
+      <linearGradient id="brGrad" x1="100%" y1="0%" x2="0%" y2="0%">
+        <stop offset="0%"   stop-color="rgba(210,190,255,0.95)"/>
+        <stop offset="55%"  stop-color="rgba(180,145,255,0.7)"/>
+        <stop offset="100%" stop-color="rgba(150,110,255,0)"/>
       </linearGradient>
-      <linearGradient id="branchFade2" x1="100%" y1="0%" x2="0%" y2="0%">
-        <stop offset="0%"   stop-color="rgba(255,255,255,0.25)"/>
+      <linearGradient id="brHi" x1="100%" y1="0%" x2="0%" y2="0%">
+        <stop offset="0%"   stop-color="rgba(255,255,255,0.3)"/>
         <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
       </linearGradient>
-      <radialGradient id="bodyFill" cx="50%" cy="45%" r="55%">
-        <stop offset="0%"   stop-color="rgba(180,140,255,0.08)"/>
-        <stop offset="100%" stop-color="rgba(80,40,160,0)"/>
-      </radialGradient>
     </defs>
 
-    <!-- BRANCH: from off-screen right (x=880) diagonal up-left -->
-    <path d="M880,630 Q700,570 530,510 Q420,472 310,455"
-          fill="none" stroke="url(#branchFade)" stroke-width="18"
-          stroke-linecap="round" filter="url(#glow-soft)"/>
-    <path d="M880,622 Q700,563 530,503 Q420,465 310,448"
-          fill="none" stroke="url(#branchFade2)" stroke-width="6"
-          stroke-linecap="round"/>
-    <!-- bark lines -->
-    <line x1="680" y1="560" x2="692" y2="546" stroke="rgba(180,140,255,0.35)" stroke-width="2" stroke-linecap="round"/>
-    <line x1="620" y1="542" x2="630" y2="528" stroke="rgba(180,140,255,0.3)"  stroke-width="1.8" stroke-linecap="round"/>
-    <line x1="560" y1="524" x2="568" y2="512" stroke="rgba(180,140,255,0.25)" stroke-width="1.5" stroke-linecap="round"/>
-    <!-- Twig -->
-    <path d="M635,543 Q622,513 608,492" fill="none" stroke="url(#branchFade)"
-          stroke-width="6" stroke-linecap="round" opacity="0.7"/>
-    <path d="M608,492 Q600,477 592,464" fill="none" stroke="rgba(180,140,255,0.4)"
-          stroke-width="3.5" stroke-linecap="round"/>
-    <ellipse cx="591" cy="462" rx="10" ry="5" fill="none"
-             stroke="rgba(180,200,255,0.35)" stroke-width="1.5"
-             transform="rotate(-30,591,462)"/>
+    <!-- stroke color shorthand: rgba(218,205,255,S) where S varies for depth -->
+    <!-- S=0.92 main edges, S=0.55 inner lines, S=0.30 fill triangles -->
 
-    <!-- BODY: hexagon -->
-    <polygon points="440,242 510,291 510,400 440,440 370,400 370,291"
-             fill="url(#bodyFill)"
-             stroke="rgba(218,205,255,0.88)" stroke-width="2.2"
-             stroke-linejoin="round" filter="url(#glow-owl)"/>
-    <!-- WINGS left -->
-    <polyline points="370,291 318,312 303,382 352,412 370,400"
-              fill="none" stroke="rgba(200,180,255,0.65)" stroke-width="1.8"
-              stroke-linejoin="round" filter="url(#glow-owl)"/>
-    <line x1="318" y1="312" x2="344" y2="388" stroke="rgba(200,180,255,0.3)" stroke-width="1.2"/>
-    <line x1="308" y1="348" x2="352" y2="398" stroke="rgba(200,180,255,0.22)" stroke-width="1"/>
-    <!-- WINGS right -->
-    <polyline points="510,291 562,312 577,382 528,412 510,400"
-              fill="none" stroke="rgba(200,180,255,0.65)" stroke-width="1.8"
-              stroke-linejoin="round" filter="url(#glow-owl)"/>
-    <line x1="562" y1="312" x2="536" y2="388" stroke="rgba(200,180,255,0.3)" stroke-width="1.2"/>
-    <line x1="572" y1="348" x2="528" y2="398" stroke="rgba(200,180,255,0.22)" stroke-width="1"/>
-    <!-- HEAD: pentagon -->
-    <polygon points="440,156 500,196 490,259 390,259 380,196"
-             fill="rgba(160,120,255,0.06)"
-             stroke="rgba(218,205,255,0.88)" stroke-width="2.2"
-             stroke-linejoin="round" filter="url(#glow-owl)"/>
-    <!-- EAR TUFTS -->
-    <polygon points="392,201 378,151 410,191"
-             fill="rgba(160,120,255,0.1)"
-             stroke="rgba(218,205,255,0.8)" stroke-width="1.8"
-             stroke-linejoin="round" filter="url(#glow-owl)"/>
-    <polygon points="488,201 502,151 470,191"
-             fill="rgba(160,120,255,0.1)"
-             stroke="rgba(218,205,255,0.8)" stroke-width="1.8"
-             stroke-linejoin="round" filter="url(#glow-owl)"/>
-    <!-- EYES: diamonds -->
-    <polygon points="415,211 428,225 415,239 402,225"
-             fill="rgba(255,220,100,0.08)"
-             stroke="rgba(255,220,100,0.9)" stroke-width="1.8"
-             filter="url(#glow-owl)"/>
-    <circle cx="415" cy="225" r="4" fill="rgba(255,240,180,0.95)" filter="url(#glow-owl)"/>
-    <polygon points="465,211 478,225 465,239 452,225"
-             fill="rgba(255,220,100,0.08)"
-             stroke="rgba(255,220,100,0.9)" stroke-width="1.8"
-             filter="url(#glow-owl)"/>
-    <circle cx="465" cy="225" r="4" fill="rgba(255,240,180,0.95)" filter="url(#glow-owl)"/>
-    <!-- BEAK -->
-    <polygon points="440,236 430,253 450,253"
-             fill="rgba(218,205,255,0.7)"
-             stroke="rgba(218,205,255,0.9)" stroke-width="1.5"
-             stroke-linejoin="round" filter="url(#glow-owl)"/>
-    <!-- BELLY inner hex -->
-    <polygon points="440,281 470,301 470,361 440,381 410,361 410,301"
-             fill="none" stroke="rgba(200,180,255,0.28)" stroke-width="1.2"
-             stroke-linejoin="round"/>
-    <!-- FEET -->
-    <path d="M415,439 L400,456 M415,439 L412,459 M415,439 L425,456 M415,439 L430,451"
-          fill="none" stroke="rgba(200,180,255,0.75)" stroke-width="2.2"
-          stroke-linecap="round" filter="url(#glow-owl)"/>
-    <path d="M462,443 L448,459 M462,443 L460,463 M462,443 L472,459 M462,443 L477,453"
-          fill="none" stroke="rgba(200,180,255,0.75)" stroke-width="2.2"
-          stroke-linecap="round" filter="url(#glow-owl)"/>
-    <!-- Ambient glow -->
-    <ellipse cx="440" cy="310" rx="130" ry="165" fill="none"
-             stroke="rgba(140,90,255,0.07)" stroke-width="50"/>
+    <!-- ═══ BRANCH from right ═══════════════════════════════ -->
+    <path d="M700,650 Q560,625 390,610 Q300,605 180,602"
+          fill="none" stroke="url(#brGrad)" stroke-width="20" stroke-linecap="round"/>
+    <path d="M700,642 Q560,617 390,602 Q300,597 180,594"
+          fill="none" stroke="url(#brHi)" stroke-width="7" stroke-linecap="round"/>
+    <!-- bark texture -->
+    <line x1="620" y1="632" x2="634" y2="618" stroke="rgba(180,140,255,0.38)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="560" y1="624" x2="572" y2="611" stroke="rgba(180,140,255,0.32)" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="490" y1="618" x2="500" y2="606" stroke="rgba(180,140,255,0.27)" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- twig up -->
+    <path d="M540,620 Q525,595 512,572 Q505,555 496,540"
+          fill="none" stroke="rgba(190,155,255,0.55)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M496,540 Q490,526 482,514"
+          fill="none" stroke="rgba(190,155,255,0.4)" stroke-width="3" stroke-linecap="round"/>
+    <!-- tiny leaf -->
+    <ellipse cx="481" cy="512" rx="9" ry="5" fill="none"
+             stroke="rgba(180,200,255,0.35)" stroke-width="1.5"
+             transform="rotate(-40 481 512)"/>
+
+    <!-- ═══ OWL LOW-POLY ══════════════════════════════════════
+         Key vertices (approximate center x=280):
+         Owl sits on branch around y=600
+         Overall height ~520px, width ~240px
+    ══════════════════════════════════════════════════════════ -->
+
+    <!-- All polygons drawn with fill="none", stroke for neon wire look -->
+    <!-- Slightly filled versions first (depth), then stroked edges on top -->
+
+    <!-- ── TAIL / LOWER BODY (base) ────────────────────────── -->
+    <polygon points="240,600 320,600 310,560 250,560"
+             fill="rgba(160,120,255,0.07)" stroke="rgba(218,205,255,0.88)"
+             stroke-width="1.6" stroke-linejoin="round" filter="url(#neon)"/>
+    <!-- lower feet triangles -->
+    <polygon points="240,600 220,620 255,620 250,600"
+             fill="rgba(160,120,255,0.05)" stroke="rgba(218,205,255,0.82)"
+             stroke-width="1.5" stroke-linejoin="round" filter="url(#neon)"/>
+    <polygon points="320,600 340,620 305,620 310,600"
+             fill="rgba(160,120,255,0.05)" stroke="rgba(218,205,255,0.82)"
+             stroke-width="1.5" stroke-linejoin="round" filter="url(#neon)"/>
+    <!-- talons -->
+    <line x1="235" y1="620" x2="215" y2="635" stroke="rgba(218,205,255,0.75)" stroke-width="1.5" stroke-linecap="round" filter="url(#neon)"/>
+    <line x1="245" y1="622" x2="238" y2="638" stroke="rgba(218,205,255,0.75)" stroke-width="1.5" stroke-linecap="round" filter="url(#neon)"/>
+    <line x1="258" y1="622" x2="260" y2="638" stroke="rgba(218,205,255,0.75)" stroke-width="1.5" stroke-linecap="round" filter="url(#neon)"/>
+    <line x1="325" y1="620" x2="345" y2="635" stroke="rgba(218,205,255,0.75)" stroke-width="1.5" stroke-linecap="round" filter="url(#neon)"/>
+    <line x1="315" y1="622" x2="322" y2="638" stroke="rgba(218,205,255,0.75)" stroke-width="1.5" stroke-linecap="round" filter="url(#neon)"/>
+    <line x1="302" y1="622" x2="300" y2="638" stroke="rgba(218,205,255,0.75)" stroke-width="1.5" stroke-linecap="round" filter="url(#neon)"/>
+
+    <!-- ── LOWER BODY / BELLY ────────────────────────────────── -->
+    <!-- central polygon body base -->
+    <polygon points="250,560 310,560 330,510 280,490 230,510"
+             fill="rgba(160,120,255,0.08)" stroke="rgba(218,205,255,0.88)"
+             stroke-width="1.7" stroke-linejoin="round" filter="url(#neon)"/>
+    <!-- inner triangulation of belly -->
+    <line x1="280" y1="490" x2="250" y2="560" stroke="rgba(218,205,255,0.42)" stroke-width="1.2" filter="url(#neon)"/>
+    <line x1="280" y1="490" x2="310" y2="560" stroke="rgba(218,205,255,0.42)" stroke-width="1.2" filter="url(#neon)"/>
+    <line x1="280" y1="490" x2="280" y2="560" stroke="rgba(218,205,255,0.35)" stroke-width="1.0" filter="url(#neon)"/>
+    <line x1="230" y1="510" x2="310" y2="560" stroke="rgba(218,205,255,0.38)" stroke-width="1.1" filter="url(#neon)"/>
+    <line x1="330" y1="510" x2="250" y2="560" stroke="rgba(218,205,255,0.38)" stroke-width="1.1" filter="url(#neon)"/>
+
+    <!-- belly upper section -->
+    <polygon points="230,510 280,490 330,510 310,460 250,460"
+             fill="rgba(160,120,255,0.09)" stroke="rgba(218,205,255,0.88)"
+             stroke-width="1.7" stroke-linejoin="round" filter="url(#neon)"/>
+    <line x1="280" y1="490" x2="250" y2="460" stroke="rgba(218,205,255,0.40)" stroke-width="1.1" filter="url(#neon)"/>
+    <line x1="280" y1="490" x2="310" y2="460" stroke="rgba(218,205,255,0.40)" stroke-width="1.1" filter="url(#neon)"/>
+    <line x1="230" y1="510" x2="280" y2="460" stroke="rgba(218,205,255,0.33)" stroke-width="1.0" filter="url(#neon)"/>
+    <line x1="330" y1="510" x2="280" y2="460" stroke="rgba(218,205,255,0.33)" stroke-width="1.0" filter="url(#neon)"/>
+
+    <!-- ── WINGS (flanking body) ──────────────────────────────── -->
+    <!-- Left wing -->
+    <polygon points="230,510 180,490 170,410 220,390 250,420 250,460"
+             fill="rgba(130,95,220,0.07)" stroke="rgba(218,205,255,0.82)"
+             stroke-width="1.6" stroke-linejoin="round" filter="url(#neon)"/>
+    <line x1="180" y1="490" x2="250" y2="460" stroke="rgba(218,205,255,0.38)" stroke-width="1.1" filter="url(#neon)"/>
+    <line x1="170" y1="410" x2="250" y2="460" stroke="rgba(218,205,255,0.35)" stroke-width="1.0" filter="url(#neon)"/>
+    <line x1="170" y1="410" x2="230" y2="510" stroke="rgba(218,205,255,0.32)" stroke-width="1.0" filter="url(#neon)"/>
+    <line x1="220" y1="390" x2="180" y2="490" stroke="rgba(218,205,255,0.30)" stroke-width="1.0" filter="url(#neon)"/>
+    <line x1="220" y1="390" x2="250" y2="460" stroke="rgba(218,205,255,0.35)" stroke-width="1.1" filter="url(#neon)"/>
+
+    <!-- Right wing -->
+    <polygon points="330,510 380,490 390,410 340,390 310,420 310,460"
+             fill="rgba(130,95,220,0.07)" stroke="rgba(218,205,255,0.82)"
+             stroke-width="1.6" stroke-linejoin="round" filter="url(#neon)"/>
+    <line x1="380" y1="490" x2="310" y2="460" stroke="rgba(218,205,255,0.38)" stroke-width="1.1" filter="url(#neon)"/>
+    <line x1="390" y1="410" x2="310" y2="460" stroke="rgba(218,205,255,0.35)" stroke-width="1.0" filter="url(#neon)"/>
+    <line x1="390" y1="410" x2="330" y2="510" stroke="rgba(218,205,255,0.32)" stroke-width="1.0" filter="url(#neon)"/>
+    <line x1="340" y1="390" x2="380" y2="490" stroke="rgba(218,205,255,0.30)" stroke-width="1.0" filter="url(#neon)"/>
+    <line x1="340" y1="390" x2="310" y2="460" stroke="rgba(218,205,255,0.35)" stroke-width="1.1" filter="url(#neon)"/>
+
+    <!-- ── CHEST / UPPER BODY ────────────────────────────────── -->
+    <polygon points="250,460 310,460 330,410 280,390 230,410"
+             fill="rgba(160,125,255,0.10)" stroke="rgba(218,205,255,0.90)"
+             stroke-width="1.8" stroke-linejoin="round" filter="url(#neon)"/>
+    <line x1="280" y1="390" x2="250" y2="460" stroke="rgba(218,205,255,0.44)" stroke-width="1.2" filter="url(#neon)"/>
+    <line x1="280" y1="390" x2="310" y2="460" stroke="rgba(218,205,255,0.44)" stroke-width="1.2" filter="url(#neon)"/>
+    <line x1="230" y1="410" x2="310" y2="460" stroke="rgba(218,205,255,0.36)" stroke-width="1.1" filter="url(#neon)"/>
+    <line x1="330" y1="410" x2="250" y2="460" stroke="rgba(218,205,255,0.36)" stroke-width="1.1" filter="url(#neon)"/>
+    <line x1="230" y1="410" x2="280" y2="460" stroke="rgba(218,205,255,0.30)" stroke-width="1.0" filter="url(#neon)"/>
+    <line x1="330" y1="410" x2="280" y2="460" stroke="rgba(218,205,255,0.30)" stroke-width="1.0" filter="url(#neon)"/>
+
+    <!-- upper chest to neck -->
+    <polygon points="230,410 280,390 330,410 310,360 250,360"
+             fill="rgba(160,125,255,0.09)" stroke="rgba(218,205,255,0.88)"
+             stroke-width="1.7" stroke-linejoin="round" filter="url(#neon)"/>
+    <line x1="280" y1="390" x2="250" y2="360" stroke="rgba(218,205,255,0.42)" stroke-width="1.2" filter="url(#neon)"/>
+    <line x1="280" y1="390" x2="310" y2="360" stroke="rgba(218,205,255,0.42)" stroke-width="1.2" filter="url(#neon)"/>
+    <line x1="230" y1="410" x2="310" y2="360" stroke="rgba(218,205,255,0.34)" stroke-width="1.1" filter="url(#neon)"/>
+    <line x1="330" y1="410" x2="250" y2="360" stroke="rgba(218,205,255,0.34)" stroke-width="1.1" filter="url(#neon)"/>
+
+    <!-- ── HEAD ──────────────────────────────────────────────── -->
+    <!-- Main head polygon -->
+    <polygon points="250,360 310,360 335,310 280,285 225,310"
+             fill="rgba(155,115,255,0.10)" stroke="rgba(218,205,255,0.92)"
+             stroke-width="1.9" stroke-linejoin="round" filter="url(#neon)"/>
+
+    <!-- Head triangulation -->
+    <line x1="280" y1="285" x2="250" y2="360" stroke="rgba(218,205,255,0.45)" stroke-width="1.2" filter="url(#neon)"/>
+    <line x1="280" y1="285" x2="310" y2="360" stroke="rgba(218,205,255,0.45)" stroke-width="1.2" filter="url(#neon)"/>
+    <line x1="225" y1="310" x2="310" y2="360" stroke="rgba(218,205,255,0.38)" stroke-width="1.2" filter="url(#neon)"/>
+    <line x1="335" y1="310" x2="250" y2="360" stroke="rgba(218,205,255,0.38)" stroke-width="1.2" filter="url(#neon)"/>
+    <line x1="225" y1="310" x2="280" y2="360" stroke="rgba(218,205,255,0.30)" stroke-width="1.0" filter="url(#neon)"/>
+    <line x1="335" y1="310" x2="280" y2="360" stroke="rgba(218,205,255,0.30)" stroke-width="1.0" filter="url(#neon)"/>
+
+    <!-- Top of head -->
+    <polygon points="225,310 280,285 335,310 315,268 245,268"
+             fill="rgba(155,115,255,0.09)" stroke="rgba(218,205,255,0.88)"
+             stroke-width="1.7" stroke-linejoin="round" filter="url(#neon)"/>
+    <line x1="280" y1="285" x2="245" y2="268" stroke="rgba(218,205,255,0.40)" stroke-width="1.1" filter="url(#neon)"/>
+    <line x1="280" y1="285" x2="315" y2="268" stroke="rgba(218,205,255,0.40)" stroke-width="1.1" filter="url(#neon)"/>
+    <line x1="225" y1="310" x2="315" y2="268" stroke="rgba(218,205,255,0.33)" stroke-width="1.0" filter="url(#neon)"/>
+    <line x1="335" y1="310" x2="245" y2="268" stroke="rgba(218,205,255,0.33)" stroke-width="1.0" filter="url(#neon)"/>
+
+    <!-- ── EAR TUFTS ─────────────────────────────────────────── -->
+    <!-- Left tuft: 3 triangles stacked -->
+    <polygon points="245,268 228,240 258,252"
+             fill="rgba(140,100,240,0.12)" stroke="rgba(218,205,255,0.88)"
+             stroke-width="1.7" stroke-linejoin="round" filter="url(#neon)"/>
+    <polygon points="228,240 242,215 255,238"
+             fill="rgba(140,100,240,0.10)" stroke="rgba(218,205,255,0.82)"
+             stroke-width="1.5" stroke-linejoin="round" filter="url(#neon)"/>
+    <polygon points="242,215 250,192 258,215"
+             fill="rgba(140,100,240,0.08)" stroke="rgba(218,205,255,0.75)"
+             stroke-width="1.4" stroke-linejoin="round" filter="url(#neon)"/>
+
+    <!-- Right tuft -->
+    <polygon points="315,268 332,240 302,252"
+             fill="rgba(140,100,240,0.12)" stroke="rgba(218,205,255,0.88)"
+             stroke-width="1.7" stroke-linejoin="round" filter="url(#neon)"/>
+    <polygon points="332,240 318,215 305,238"
+             fill="rgba(140,100,240,0.10)" stroke="rgba(218,205,255,0.82)"
+             stroke-width="1.5" stroke-linejoin="round" filter="url(#neon)"/>
+    <polygon points="318,215 310,192 302,215"
+             fill="rgba(140,100,240,0.08)" stroke="rgba(218,205,255,0.75)"
+             stroke-width="1.4" stroke-linejoin="round" filter="url(#neon)"/>
+
+    <!-- ── FACIAL DISC (subtle inner polygon) ───────────────── -->
+    <polygon points="255,330 280,318 305,330 300,355 260,355"
+             fill="rgba(200,185,255,0.06)" stroke="rgba(218,205,255,0.50)"
+             stroke-width="1.2" stroke-linejoin="round" filter="url(#neon)"/>
+
+    <!-- ── LEFT EYE ──────────────────────────────────────────── -->
+    <!-- Eye socket polygon -->
+    <polygon points="242,318 255,308 268,318 262,334 248,334"
+             fill="rgba(255,210,80,0.10)" stroke="rgba(255,215,90,0.92)"
+             stroke-width="1.8" stroke-linejoin="round" filter="url(#neon-eye)"/>
+    <!-- Eye inner ring -->
+    <polygon points="248,320 255,313 262,320 259,330 251,330"
+             fill="rgba(255,220,100,0.15)" stroke="rgba(255,225,110,0.85)"
+             stroke-width="1.4" stroke-linejoin="round" filter="url(#neon-eye)"/>
+    <!-- Pupil -->
+    <circle cx="255" cy="322" r="4.5" fill="rgba(20,5,50,0.95)"
+            stroke="rgba(255,210,80,0.7)" stroke-width="1.2" filter="url(#neon-eye)"/>
+    <!-- Glint -->
+    <circle cx="252" cy="319" r="1.8" fill="rgba(255,255,255,0.90)"/>
+    <!-- Brow ridge line above eye -->
+    <line x1="242" y1="314" x2="268" y2="314"
+          stroke="rgba(218,205,255,0.65)" stroke-width="1.8"
+          stroke-linecap="round" filter="url(#neon)"/>
+
+    <!-- ── RIGHT EYE ─────────────────────────────────────────── -->
+    <polygon points="292,318 305,308 318,318 312,334 298,334"
+             fill="rgba(255,210,80,0.10)" stroke="rgba(255,215,90,0.92)"
+             stroke-width="1.8" stroke-linejoin="round" filter="url(#neon-eye)"/>
+    <polygon points="298,320 305,313 312,320 309,330 301,330"
+             fill="rgba(255,220,100,0.15)" stroke="rgba(255,225,110,0.85)"
+             stroke-width="1.4" stroke-linejoin="round" filter="url(#neon-eye)"/>
+    <circle cx="305" cy="322" r="4.5" fill="rgba(20,5,50,0.95)"
+            stroke="rgba(255,210,80,0.7)" stroke-width="1.2" filter="url(#neon-eye)"/>
+    <circle cx="302" cy="319" r="1.8" fill="rgba(255,255,255,0.90)"/>
+    <line x1="292" y1="314" x2="318" y2="314"
+          stroke="rgba(218,205,255,0.65)" stroke-width="1.8"
+          stroke-linecap="round" filter="url(#neon)"/>
+
+    <!-- ── BEAK ──────────────────────────────────────────────── -->
+    <!-- Upper beak -->
+    <polygon points="272,336 280,328 288,336 280,346"
+             fill="rgba(218,205,255,0.18)" stroke="rgba(218,205,255,0.88)"
+             stroke-width="1.6" stroke-linejoin="round" filter="url(#neon)"/>
+    <!-- Lower beak -->
+    <polygon points="274,342 280,346 286,342 280,352"
+             fill="rgba(218,205,255,0.12)" stroke="rgba(218,205,255,0.72)"
+             stroke-width="1.4" stroke-linejoin="round" filter="url(#neon)"/>
+
+    <!-- ── NOSE/FOREHEAD triangles ───────────────────────────── -->
+    <line x1="255" y1="308" x2="280" y2="318" stroke="rgba(218,205,255,0.40)" stroke-width="1.1" filter="url(#neon)"/>
+    <line x1="305" y1="308" x2="280" y2="318" stroke="rgba(218,205,255,0.40)" stroke-width="1.1" filter="url(#neon)"/>
+    <line x1="255" y1="308" x2="305" y2="308" stroke="rgba(218,205,255,0.35)" stroke-width="1.0" filter="url(#neon)"/>
+
+    <!-- ── NECK connecting head to chest ─────────────────────── -->
+    <line x1="250" y1="360" x2="230" y2="410" stroke="rgba(218,205,255,0.55)" stroke-width="1.5" filter="url(#neon)"/>
+    <line x1="310" y1="360" x2="330" y2="410" stroke="rgba(218,205,255,0.55)" stroke-width="1.5" filter="url(#neon)"/>
   </svg>
 </div>
+
+
     <div class="wrap">
       <div class="hero-content">
         <div class="hero-eyebrow"><div class="hero-dot"></div><span>Owlbox LATAM</span></div>
