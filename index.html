@@ -9,44 +9,115 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0A0A0A;--v1:#270b3d;--v2:#3d1260;--orange:#ff421e;--blue:#0EA5E9;--sand:#F5F4F0;--muted:rgba(245,244,240,0.42);--line:rgba(245,244,240,0.07);--line2:rgba(245,244,240,0.13);--sans:"DM Sans",sans-serif;--mono:"DM Mono",monospace}
+/* ── TOKENS ─────────────────────────────── */
+:root{
+  --bg:#0A0A0A;--v1:#270b3d;--v2:#3d1260;
+  --orange:#ff421e;--blue:#0EA5E9;
+  --sand:#F5F4F0;--muted:rgba(245,244,240,0.42);
+  --line:rgba(245,244,240,0.07);--line2:rgba(245,244,240,0.13);
+  --sans:"DM Sans",sans-serif;--mono:"DM Mono",monospace;
+  /* Owl neon: white with violet tint */
+  --owl-neon:rgba(228,215,255,0.92);
+  --owl-glow1:rgba(180,130,255,0.85);
+  --owl-glow2:rgba(130,70,255,0.4);
+}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:var(--mono);font-size:15px;line-height:1.7;color:var(--sand);background:var(--bg);background-image:radial-gradient(ellipse 120% 90% at 100% 0%,#3d1260 0%,#270b3d 35%,#0A0A0A 68%),radial-gradient(ellipse 60% 40% at 0% 100%,#1a0828 0%,transparent 60%);background-attachment:fixed;overflow-x:hidden;cursor:none}
+body{
+  font-family:var(--mono);font-size:15px;line-height:1.7;
+  color:var(--sand);background:var(--bg);
+  background-image:
+    radial-gradient(ellipse 120% 90% at 100% 0%,#3d1260 0%,#270b3d 35%,#0A0A0A 68%),
+    radial-gradient(ellipse 60% 40% at 0% 100%,#1a0828 0%,transparent 60%);
+  background-attachment:fixed;overflow-x:hidden;
+  /* No cursor:none on touch — handled in JS */
+}
 p{color:#fff}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--v1);border-radius:2px}
-#cur-dot{position:fixed;width:10px;height:10px;border-radius:50%;background:rgba(107,33,168,.95);border:1.5px solid rgba(200,130,255,.7);pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform .1s;mix-blend-mode:screen}
-#cur-trail{position:fixed;border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(107,33,168,.18) 0%,rgba(107,33,168,.06) 40%,transparent 68%);transition:left .22s cubic-bezier(.25,.46,.45,.94),top .22s cubic-bezier(.25,.46,.45,.94);will-change:left,top}
-@media(hover:none){#cur-dot,#cur-trail{display:none}}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--v1);border-radius:2px}
+
+/* ── CURSOR (custom) — desktop only ─── */
+@media(hover:hover){
+  body{cursor:none}
+}
+#cur-dot{
+  position:fixed;width:10px;height:10px;border-radius:50%;
+  background:rgba(107,33,168,.95);border:1.5px solid rgba(200,130,255,.7);
+  pointer-events:none;z-index:99999;
+  transform:translate(-50%,-50%);transition:transform .1s;
+  mix-blend-mode:screen;
+  /* hidden until mouse moves */
+  opacity:0;
+}
+#cur-trail{
+  position:fixed;border-radius:50%;pointer-events:none;z-index:99998;
+  transform:translate(-50%,-50%);width:280px;height:280px;
+  background:radial-gradient(circle,rgba(107,33,168,.18) 0%,rgba(107,33,168,.06) 40%,transparent 68%);
+  transition:left .22s cubic-bezier(.25,.46,.45,.94),top .22s cubic-bezier(.25,.46,.45,.94);
+  will-change:left,top;opacity:0;
+}
+
+/* ── OWL CURSOR SPRITE — 10×10px neon silhouette ─── */
+#owl-cursor{
+  position:fixed;
+  width:22px;height:22px;
+  pointer-events:none;
+  z-index:99997;
+  /* Start hidden, appears after first mousemove */
+  opacity:0;
+  transition:opacity .4s;
+  will-change:left,top;
+  /* Positioned by JS: top-left corner at cursor coords */
+}
+#owl-cursor svg{
+  width:22px;height:22px;
+  overflow:visible;
+  filter:
+    drop-shadow(0 0 2px var(--owl-glow1))
+    drop-shadow(0 0 5px var(--owl-glow2))
+    drop-shadow(0 0 10px rgba(120,60,255,.3));
+}
+
+/* ── LAYOUT ─────────────────────────────── */
 .wrap{max-width:80%;margin:0 auto}
 .page{display:none}.page.active{display:block}
 .section{padding:108px 0}
+
+/* ── TYPE ────────────────────────────────── */
 h1,h2,h3,h4{font-family:var(--sans);font-weight:800;color:var(--sand);letter-spacing:-.03em;line-height:1.05}
-h1{font-size:clamp(32px,4.5vw,64px)}h2{font-size:clamp(24px,3.2vw,48px)}h3{font-size:clamp(18px,2.2vw,28px)}
+h1{font-size:clamp(40px,6vw,88px)}
+h2{font-size:clamp(24px,3.2vw,48px)}
+h3{font-size:clamp(18px,2.2vw,28px)}
 .accent{color:var(--orange)}.dim{color:var(--muted)}
 .tag-label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);display:block;margin-bottom:18px}
+
+/* ── BUTTONS ─────────────────────────────── */
 .btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--sans);font-weight:700;font-size:14px;color:#270b3d;background:var(--sand);border:none;padding:13px 28px;border-radius:8px;cursor:none;text-decoration:none;white-space:nowrap;transition:box-shadow .3s,transform .15s}
 .btn:hover{box-shadow:0 0 12px 3px rgba(107,33,168,.4),0 0 28px 6px rgba(107,33,168,.15);transform:translateY(-1px)}
 .btn-ghost{background:transparent;color:var(--sand);border:1px solid var(--line2)}
 .btn-ghost:hover{background:rgba(245,244,240,.04);color:var(--sand);box-shadow:0 0 12px 3px rgba(107,33,168,.35),0 0 28px 6px rgba(107,33,168,.12)}
-/* HEADER */
+
+/* ── HEADER ─────────────────────────────── */
 header{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:500;width:calc(100% - 48px);max-width:1400px;background:rgba(12,4,22,.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--line2);border-radius:14px;transition:opacity .35s,box-shadow .3s}
 header.scrolled{box-shadow:0 4px 40px rgba(0,0,0,.45)}
 .header-inner{display:flex;align-items:center;justify-content:space-between;height:62px;padding:0 28px}
 .logo-wrap{cursor:none;display:flex;align-items:center;flex-shrink:0}
 .logo-wrap img{height:26px;width:auto;display:block}
 nav{display:flex;align-items:center;gap:32px}
-.nav-link{font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--muted);text-decoration:none;background:none;border:none;cursor:none;transition:color .2s;padding:4px 0}
+.nav-link{font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--muted);background:none;border:none;cursor:none;transition:color .2s;padding:4px 0}
 .nav-link:hover{color:var(--sand)}
+
+/* dropdown */
 .dropdown{position:relative}
-.dd-trigger{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--muted);background:none;border:none;cursor:none;transition:color .2s;padding:4px 0}
+.dd-trigger{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:13px;color:var(--muted);background:none;border:none;cursor:none;transition:color .2s;padding:4px 0}
 .dd-trigger:hover{color:var(--sand)}
 .dd-arrow{font-size:9px;transition:transform .22s;display:inline-block;opacity:.6}
 .dropdown:hover .dd-arrow{transform:rotate(180deg)}
 .dd-menu{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:14px;min-width:280px;z-index:600}
 .dropdown:hover .dd-menu{display:block}
 .dd-menu-inner{background:rgba(12,4,22,.92);backdrop-filter:blur(24px);border:1px solid var(--line2);border-radius:12px;padding:8px;overflow:hidden}
-.dd-item{display:flex;align-items:center;gap:14px;width:100%;padding:12px 16px;border-radius:8px;background:none;border:none;cursor:none;text-align:left;text-decoration:none;transition:background .16s}
+.dd-item{display:flex;align-items:center;gap:14px;width:100%;padding:12px 16px;border-radius:8px;background:none;border:none;cursor:none;text-align:left;transition:background .16s}
 .dd-item:hover{background:rgba(245,244,240,.06)}
 .dd-num{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.08em;flex-shrink:0;min-width:24px}
 .dd-num.orange{color:var(--orange)}.dd-num.blue{color:var(--blue)}
@@ -54,16 +125,20 @@ nav{display:flex;align-items:center;gap:32px}
 .dd-sub{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .dd-name{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--sand);letter-spacing:-.01em}
 .dd-divider{height:1px;background:var(--line);margin:4px 0}
-.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:none;padding:4px}
+
+/* hamburger */
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
 .burger span{display:block;width:22px;height:2px;background:var(--sand);border-radius:2px;transition:transform .25s,opacity .25s}
 .burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .burger.open span:nth-child(2){opacity:0}
 .burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* mobile menu */
 .mobile-menu{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(8,2,16,.98);backdrop-filter:blur(24px);z-index:400;transform:translateY(-100%);transition:transform .38s cubic-bezier(.4,0,.2,1),opacity .38s;opacity:0;display:flex;flex-direction:column;padding:0 28px 40px}
 .mobile-menu.open{transform:translateY(0);opacity:1}
 .mob-header{height:90px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid var(--line)}
-.mob-logo img{height:24px;width:auto;cursor:none}
-.mob-close{background:none;border:none;cursor:none;color:var(--muted);font-size:22px;line-height:1;transition:color .2s;font-family:var(--sans);font-weight:300}
+.mob-logo img{height:24px;width:auto}
+.mob-close{background:none;border:none;cursor:pointer;color:var(--muted);font-size:22px;line-height:1;transition:color .2s;font-family:var(--sans);font-weight:300}
 .mob-close:hover{color:var(--sand)}
 .mob-body{flex:1;overflow-y:auto;padding-top:28px}
 .mob-section-title{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);margin-bottom:8px;margin-top:24px;display:block}
@@ -72,22 +147,90 @@ nav{display:flex;align-items:center;gap:32px}
 .mob-link:hover{color:var(--orange)}
 .mob-link:last-of-type{border-bottom:none}
 .mob-cta-wrap{padding-top:28px}
-.mob-cta{width:100%;justify-content:center;font-size:15px;padding:15px 0}
-/* HERO */
-.hero{height:100vh;min-height:580px;display:flex;align-items:center;position:relative;overflow:hidden}
+.mob-cta{width:100%;justify-content:center;font-size:15px;padding:15px 0;cursor:pointer}
+
+/* ══════════════════════════════════════════
+   HERO — Tálamo-style: title bottom-left
+   ══════════════════════════════════════════ */
+.hero{
+  height:100vh;min-height:600px;
+  position:relative;overflow:hidden;
+  display:flex;align-items:flex-end; /* anchor content to bottom */
+}
 .hero-video-wrap{position:absolute;inset:0;z-index:0;overflow:hidden}
-.hero-video-wrap iframe{position:absolute;top:50%;left:50%;width:177.78vh;height:100vh;min-width:100vw;min-height:56.25vw;transform:translate(-50%,-50%);pointer-events:none;mix-blend-mode:multiply;opacity:.5;border:none}
+.hero-video-wrap iframe{
+  position:absolute;top:50%;left:50%;
+  width:177.78vh;height:100vh;
+  min-width:100vw;min-height:56.25vw;
+  transform:translate(-50%,-50%);
+  pointer-events:none;mix-blend-mode:multiply;opacity:.5;border:none
+}
 .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,rgba(39,11,61,.55) 0%,rgba(10,10,10,.35) 100%)}
-.hero-grid{position:absolute;inset:0;z-index:1;background-image:linear-gradient(rgba(245,244,240,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(245,244,240,.018) 1px,transparent 1px);background-size:72px 72px;pointer-events:none}
-.hero-content{position:relative;z-index:2;text-align:center;margin:0 auto;max-width:720px}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:20px;border:1px solid rgba(255,66,30,.28);padding:5px 13px 5px 9px;border-radius:4px}
+.hero-grid{
+  position:absolute;inset:0;z-index:1;
+  background-image:linear-gradient(rgba(245,244,240,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(245,244,240,.018) 1px,transparent 1px);
+  background-size:72px 72px;pointer-events:none
+}
+.hero-content{
+  position:relative;z-index:2;
+  /* Tálamo style: bottom-left, generous bottom padding */
+  padding:0 0 80px 0;
+  width:100%;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-bottom:28px;
+  border:1px solid rgba(255,66,30,.28);
+  padding:5px 13px 5px 9px;border-radius:4px;
+}
 .hero-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:blink 2s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .hero-eyebrow span{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange)}
-.hero h1{font-size:clamp(30px,4vw,58px);margin-bottom:10px;color:var(--sand)}
-.hero h2{font-size:clamp(15px,2vw,24px);color:var(--orange);font-weight:700;margin-bottom:16px;letter-spacing:-.02em;line-height:1.2}
-.hero-sub{font-size:14px;color:rgba(245,244,240,.7);max-width:560px;margin:0 auto 28px;line-height:1.75}
-.hero-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center}
+/* BIG title: left-aligned, massive */
+.hero h1{
+  font-size:clamp(44px,7vw,96px);
+  color:var(--sand);
+  letter-spacing:-.04em;
+  line-height:1.0;
+  text-align:left;
+  margin-bottom:48px;
+  max-width:900px;
+}
+.hero-actions{
+  display:flex;align-items:center;gap:14px;
+  flex-wrap:wrap;
+  /* left-aligned */
+}
+
+/* ══ TAGLINE SECTION (immediately below hero) ══ */
+.tagline-section{
+  padding:100px 0 100px;
+  border-bottom:1px solid var(--line);
+  position:relative;
+  overflow:hidden;
+}
+.tagline-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 50% 70% at 80% 50%,rgba(39,11,61,.35) 0%,transparent 65%);
+  pointer-events:none;
+}
+.tagline-h2{
+  font-family:var(--sans);font-weight:800;
+  font-size:clamp(26px,3.8vw,54px);
+  color:var(--sand);letter-spacing:-.03em;line-height:1.1;
+  max-width:800px;margin-bottom:32px;
+}
+.tagline-p{
+  font-size:16px;color:rgba(245,244,240,.7);
+  max-width:620px;line-height:1.85;
+}
+/* fade-in on scroll */
+.fade-up{
+  opacity:0;transform:translateY(28px);
+  transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);
+}
+.fade-up.in{opacity:1;transform:translateY(0)}
+
 /* CHARTS */
 .charts-section{padding:72px 0 88px;border-top:1px solid var(--line);background:rgba(0,0,0,.3);position:relative;overflow:hidden}
 .charts-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(39,11,61,.4) 0%,transparent 65%);pointer-events:none}
@@ -103,6 +246,7 @@ nav{display:flex;align-items:center;gap:32px}
 .recovery-badge{position:absolute;top:18px;right:18px;background:rgba(255,66,30,.1);border:1px solid rgba(255,66,30,.28);border-radius:6px;padding:7px 11px;text-align:center}
 .recovery-pct{font-family:var(--sans);font-weight:800;font-size:20px;color:var(--orange);display:block;line-height:1}
 .recovery-lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px;display:block;font-family:var(--mono)}
+
 /* LOGOS */
 .logos-strip{padding:44px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden}
 .logos-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:22px;font-family:var(--mono)}
@@ -110,7 +254,8 @@ nav{display:flex;align-items:center;gap:32px}
 @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .logo-chip{font-family:var(--sans);font-weight:700;font-size:14px;color:rgba(245,244,240,.16);white-space:nowrap;padding:8px 28px;border-right:1px solid var(--line);letter-spacing:-.01em;transition:color .3s;cursor:none}
 .logo-chip:hover{color:rgba(245,244,240,.45)}
-/* SERVICES — 3 pillars */
+
+/* SERVICES */
 .services-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:56px}
 .svc-card{background:rgba(10,10,10,.55);padding:44px 36px;cursor:none;position:relative;transition:background .25s}
 .svc-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform .3s}
@@ -120,6 +265,7 @@ nav{display:flex;align-items:center;gap:32px}
 .svc-desc{font-size:13px;color:rgba(245,244,240,.65);line-height:1.8;margin-bottom:22px}
 .svc-tags{display:flex;flex-wrap:wrap;gap:7px}
 .svc-tag{font-size:11px;letter-spacing:.07em;color:rgba(245,244,240,.38);border:1px solid var(--line2);padding:4px 11px;border-radius:3px;font-family:var(--mono)}
+
 /* METHOD */
 .method-header{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:end;margin-bottom:52px}
 .method-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
@@ -127,6 +273,7 @@ nav{display:flex;align-items:center;gap:32px}
 .step-n{font-family:var(--sans);font-size:48px;font-weight:800;color:rgba(255,66,30,.1);line-height:1;margin-bottom:12px;display:block}
 .step-title{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--sand);margin-bottom:8px;letter-spacing:-.01em}
 .step-desc{font-size:13px;color:rgba(245,244,240,.6);line-height:1.7}
+
 /* RESULTS */
 .results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:52px}
 .result-card{border:1px solid var(--line);border-radius:8px;padding:36px 28px;position:relative;overflow:hidden;transition:border-color .3s}
@@ -137,211 +284,105 @@ nav{display:flex;align-items:center;gap:32px}
 .result-text{font-size:13px;color:rgba(245,244,240,.6);line-height:1.65}
 .result-sector{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,66,30,.45);margin-top:16px;display:block;font-family:var(--mono)}
 
-/* ════════════════════════════════════════════════════
+/* ══════════════════════════════════════════
    OWL STICKY SCROLL SECTION
-   ════════════════════════════════════════════════════ */
-
-/*
-  Architecture:
-  #owl-outer  — tall container (700vh), relative, triggers scroll range
-  #owl-sticky — sticky, 100vh, holds everything visible
-    .owl-left  — SVG side (50%)
-    .owl-right — text side (50%), position:relative, overflow:hidden
-      .owl-text-stage — absolute, holds all 6 slides stacked
-        .owl-slide — each item, absolute, transitions opacity+translateY
-*/
-
-#owl-outer {
-  position: relative;
-  height: 700vh;          /* scroll canvas — 7x viewport */
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+   ══════════════════════════════════════════ */
+#owl-outer{
+  position:relative;
+  /* Desktop: 700vh scroll canvas; Mobile: auto */
+  height:700vh;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
 }
-
-#owl-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  background: rgba(0,0,0,.18);
+#owl-sticky{
+  position:sticky;top:0;
+  height:100vh;
+  display:flex;align-items:center;
+  overflow:hidden;
+  background:rgba(0,0,0,.18);
 }
-
-/* subtle bg radial */
-#owl-sticky::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 70% 80% at 30% 55%, rgba(39,11,61,.38) 0%, transparent 65%);
-  pointer-events: none;
-  z-index: 0;
+#owl-sticky::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 80% at 30% 55%,rgba(39,11,61,.38) 0%,transparent 65%);
+  pointer-events:none;z-index:0;
 }
-
-.owl-layout {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
+.owl-layout{
+  position:relative;z-index:1;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
 }
+.owl-left{display:flex;justify-content:center;align-items:center;position:relative}
+#owl-glow{
+  position:absolute;width:480px;height:480px;border-radius:50%;
+  pointer-events:none;transform:translate(-50%,-50%);
+  left:50%;top:50%;
+  /* Starts invisible — no glow until drawing begins */
+  background:radial-gradient(circle,rgba(107,33,168,0) 0%,transparent 70%);
+  transition:background .6s;z-index:0;
+}
+.owl-svg-wrap{
+  position:relative;z-index:1;width:100%;max-width:440px;aspect-ratio:1;
+  /* Galaxy-plane orientation: tilted like the elliptical ring in the reference image */
+  transform:rotate(-18deg) rotateX(12deg) scaleY(0.82);
+  transform-origin:center center;transform-style:preserve-3d;
+}
+#owl-svg{width:100%;height:100%;display:block;overflow:visible}
 
-/* ── LEFT: SVG ── */
-.owl-left {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+/* Ghost path: invisible until drawing starts (opacity 0) */
+.owl-ghost{
+  fill:none;
+  stroke:rgba(200,180,255,0); /* fully transparent initially */
+  stroke-width:1.2;
+  stroke-miterlimit:10;
+  transition:stroke .8s ease;
+}
+/* When drawing has started, ghost becomes subtle */
+.drawing-started .owl-ghost{
+  stroke:rgba(200,180,255,.08);
 }
 
-#owl-glow {
-  position: absolute;
-  width: 480px; height: 480px;
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%,-50%);
-  left: 50%; top: 50%;
-  transition: background .4s;
-  z-index: 0;
+/* Draw path: the stroke that grows */
+.owl-draw{
+  fill:none;
+  stroke:var(--owl-neon);
+  stroke-width:2.2;stroke-miterlimit:10;
+  /* dasharray/offset set by JS after getTotalLength() */
+  stroke-dasharray:99999;stroke-dashoffset:99999;
+  filter:
+    drop-shadow(0 0 4px var(--owl-glow1))
+    drop-shadow(0 0 12px var(--owl-glow2))
+    drop-shadow(0 0 24px rgba(100,40,255,.2));
 }
 
-.owl-svg-wrap {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 440px;
-  aspect-ratio: 1;
-  /*
-    Orientation matching the galaxy image:
-    - tilted ~20deg clockwise on Z axis (like the elliptical ring)
-    - slight perspective squish on Y (makes it look like the galaxy plane)
-    - subtle rotateX to add the 3D "looking up at it from below" angle
-  */
-  transform: rotate(-18deg) rotateX(12deg) scaleY(0.82);
-  transform-origin: center center;
-  transform-style: preserve-3d;
+/* Travelling light dot */
+#owl-ldot{
+  filter:
+    drop-shadow(0 0 5px rgba(240,220,255,1))
+    drop-shadow(0 0 14px var(--owl-glow1))
+    drop-shadow(0 0 28px var(--owl-glow2));
+  opacity:0;
+  transition:opacity .2s;
 }
 
-#owl-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  overflow: visible;
+/* RIGHT: text stage */
+.owl-right{position:relative;min-height:320px;display:flex;flex-direction:column;justify-content:center}
+.owl-header{margin-bottom:48px}
+.owl-text-stage{
+  position:relative;
+  height:220px;
 }
-
-/* ghost paths — always visible, very subtle */
-.owl-ghost {
-  fill: none;
-  stroke: rgba(200,180,255,.1);
-  stroke-width: 1.5;
-  stroke-miterlimit: 10;
+.owl-slide{
+  position:absolute;top:0;left:0;right:0;
+  opacity:0;transform:translateY(20px);
+  will-change:opacity,transform;
+  pointer-events:none;
+  transition:none; /* JS handles via rAF */
 }
-
-/* animated draw paths */
-.owl-draw {
-  fill: none;
-  stroke: rgba(235,220,255,.88);
-  stroke-width: 2.2;
-  stroke-miterlimit: 10;
-  stroke-dasharray: 99999; /* will be set by JS */
-  stroke-dashoffset: 99999;
-  filter: drop-shadow(0 0 5px rgba(190,140,255,.8)) drop-shadow(0 0 14px rgba(140,80,255,.45));
-}
-
-/* travelling light dot */
-#owl-ldot {
-  filter: drop-shadow(0 0 6px rgba(220,180,255,1)) drop-shadow(0 0 18px rgba(160,90,255,.85)) drop-shadow(0 0 36px rgba(120,50,255,.5));
-  opacity: 0;
-  transition: opacity .3s;
-}
-
-/* ── RIGHT: text stage ── */
-.owl-right {
-  position: relative;
-  min-height: 320px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.owl-header {
-  margin-bottom: 48px;
-}
-
-.owl-text-stage {
-  position: relative;
-  height: 200px;    /* enough for one slide */
-}
-
-.owl-slide {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: none; /* JS handles all transitions via rAF */
-  will-change: opacity, transform;
-  pointer-events: none;
-}
-
-.owl-slide-num {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--orange);
-  display: block;
-  margin-bottom: 12px;
-}
-
-.owl-slide-title {
-  font-family: var(--sans);
-  font-size: clamp(20px, 2.4vw, 32px);
-  font-weight: 800;
-  color: var(--sand);
-  letter-spacing: -.03em;
-  line-height: 1.1;
-  margin-bottom: 14px;
-}
-
-.owl-slide-desc {
-  font-size: 14px;
-  color: rgba(245,244,240,.65);
-  line-height: 1.8;
-  max-width: 420px;
-}
-
-/* Progress indicator dots */
-.owl-dots {
-  display: flex;
-  gap: 8px;
-  margin-top: 40px;
-}
-.owl-dot-ind {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--line2);
-  transition: background .3s, transform .3s;
-}
-.owl-dot-ind.active {
-  background: var(--orange);
-  transform: scale(1.4);
-}
-
-/* MOBILE: stack vertically */
-@media(max-width:960px){
-  .owl-layout{grid-template-columns:1fr;gap:0}
-  .owl-left{order:1;padding:40px 0 20px}
-  .owl-svg-wrap{max-width:260px;margin:0 auto}
-  .owl-right{order:2;padding:20px 0 60px}
-  .owl-header{margin-bottom:32px}
-  .owl-text-stage{height:auto;min-height:160px}
-  .owl-slide{position:relative;top:auto;left:auto;right:auto}
-  /* On mobile we DON'T use sticky scroll — just show all items */
-  #owl-outer{height:auto}
-  #owl-sticky{position:relative;height:auto;flex-direction:column}
-}
+.owl-slide-num{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);display:block;margin-bottom:12px}
+.owl-slide-title{font-family:var(--sans);font-size:clamp(20px,2.4vw,32px);font-weight:800;color:var(--sand);letter-spacing:-.03em;line-height:1.1;margin-bottom:14px}
+.owl-slide-desc{font-size:14px;color:rgba(245,244,240,.65);line-height:1.8;max-width:420px}
+.owl-dots{display:flex;gap:8px;margin-top:40px}
+.owl-dot-ind{width:6px;height:6px;border-radius:50%;background:var(--line2);transition:background .3s,transform .3s}
+.owl-dot-ind.active{background:var(--orange);transform:scale(1.4)}
 
 /* MANIFESTO */
 .manifesto-section{padding:108px 0;position:relative;overflow:hidden}
@@ -350,11 +391,13 @@ blockquote{font-family:var(--sans);font-size:clamp(22px,3.5vw,46px);font-weight:
 .quote-sub{text-align:center;font-size:14px;color:var(--muted);max-width:440px;margin:0 auto}
 .cta-band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:88px 0}
 .cta-row{display:flex;align-items:center;justify-content:space-between;gap:56px;flex-wrap:wrap}
+
+/* INNER PAGE */
 .inner-hero{padding-top:68px;min-height:58vh;display:flex;align-items:flex-end;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
 .inner-hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 55% 80% at 90% 50%,rgba(39,11,61,.55) 0%,transparent 65%);pointer-events:none}
 .inner-hero-content{position:relative;z-index:2;padding:72px 0;max-width:720px}
 .breadcrumb{font-size:12px;color:var(--muted);margin-bottom:22px;display:flex;align-items:center;gap:8px;font-family:var(--mono)}
-.breadcrumb button{font-family:var(--mono);font-size:12px;color:var(--orange);background:none;border:none;cursor:none;transition:color .2s}
+.breadcrumb button{font-family:var(--mono);font-size:12px;color:var(--orange);background:none;border:none;cursor:pointer;transition:color .2s}
 .breadcrumb button:hover{color:#ff6b4a}
 .feature-list{margin-top:56px}
 .feature-row{display:grid;grid-template-columns:64px 1fr 1fr;gap:40px;padding:40px 0;border-bottom:1px solid var(--line);align-items:start}
@@ -393,11 +436,49 @@ footer{padding:64px 0 36px}
 .footer-col-title{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:16px;display:block;font-family:var(--mono)}
 .footer-links{list-style:none}
 .footer-links li{margin-bottom:10px}
-.footer-links a,.footer-links button{font-size:13px;color:var(--muted);text-decoration:none;background:none;border:none;cursor:none;transition:color .2s;font-family:var(--mono)}
+.footer-links a,.footer-links button{font-size:13px;color:var(--muted);text-decoration:none;background:none;border:none;cursor:pointer;transition:color .2s;font-family:var(--mono)}
 .footer-links a:hover,.footer-links button:hover{color:var(--sand)}
 .footer-bottom{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(245,244,240,.2);font-family:var(--mono)}
 .growth-iframe-wrap{padding-top:78px;height:100vh}
 .growth-iframe-wrap iframe{width:100%;height:calc(100vh - 78px);border:none;display:block}
+
+/* ══ MOBILE OWL SECTION ══ */
+@media(max-width:960px){
+  #owl-outer{height:auto !important}
+  #owl-sticky{
+    position:relative !important;
+    height:auto !important;
+    flex-direction:column;
+    padding:72px 0;
+  }
+  .owl-layout{
+    grid-template-columns:1fr !important;
+    gap:48px !important;
+  }
+  .owl-left{order:1}
+  .owl-svg-wrap{max-width:240px !important;margin:0 auto}
+  .owl-right{order:2}
+  .owl-text-stage{
+    height:auto !important;
+    position:relative !important;
+    min-height:auto;
+  }
+  /* On mobile: all slides visible, stacked, no scroll-based hiding */
+  .owl-slide{
+    position:relative !important;
+    top:auto !important;left:auto !important;right:auto !important;
+    opacity:1 !important;
+    transform:none !important;
+    pointer-events:auto !important;
+    margin-bottom:32px;
+  }
+  .owl-slide:last-child{margin-bottom:0}
+  .owl-dots{display:none}
+  /* Ghost visible on mobile without drawing */
+  .owl-ghost{stroke:rgba(200,180,255,.15) !important}
+}
+
+/* Other responsive */
 @media(max-width:960px){
   .wrap{max-width:90%}
   .services-grid{grid-template-columns:1fr}
@@ -427,8 +508,39 @@ footer{padding:64px 0 36px}
 </style>
 </head>
 <body>
+
+<!-- Custom cursor -->
 <div id="cur-dot"></div>
 <div id="cur-trail"></div>
+
+<!-- Owl cursor sprite: tiny 22×22 neon owl silhouette -->
+<div id="owl-cursor">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Simplified owl silhouette: body, ears, eyes, beak -->
+    <!-- Body/head circle -->
+    <ellipse cx="50" cy="58" rx="28" ry="32" fill="none"
+      stroke="rgba(228,215,255,0.9)" stroke-width="4"/>
+    <!-- Left ear -->
+    <polygon points="28,32 22,10 38,26" fill="none"
+      stroke="rgba(228,215,255,0.9)" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Right ear -->
+    <polygon points="72,32 78,10 62,26" fill="none"
+      stroke="rgba(228,215,255,0.9)" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Left eye -->
+    <circle cx="38" cy="54" r="8" fill="none"
+      stroke="rgba(228,215,255,0.95)" stroke-width="3"/>
+    <!-- Right eye -->
+    <circle cx="62" cy="54" r="8" fill="none"
+      stroke="rgba(228,215,255,0.95)" stroke-width="3"/>
+    <!-- Beak -->
+    <polygon points="50,62 44,70 56,70" fill="rgba(228,215,255,0.8)"/>
+    <!-- Wings hint -->
+    <path d="M22,64 Q10,72 18,82" fill="none"
+      stroke="rgba(228,215,255,0.6)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M78,64 Q90,72 82,82" fill="none"
+      stroke="rgba(228,215,255,0.6)" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+</div>
 
 <!-- HEADER -->
 <header id="hdr">
@@ -476,24 +588,35 @@ footer{padding:64px 0 36px}
 <!-- HOME PAGE -->
 <div id="page-home" class="page active">
 
-  <!-- HERO -->
+  <!-- HERO: title bottom-left, Tálamo style -->
   <section class="hero">
     <div class="hero-video-wrap">
-      <iframe src="https://www.youtube.com/embed/HXJEakm65FI?si=-uwWxgasnBSa9BwZ&amp;controls=0&amp;autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=HXJEakm65FI&amp;playsinline=1&amp;rel=0&amp;modestbranding=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <iframe src="https://www.youtube.com/embed/HXJEakm65FI?si=-uwWxgasnBSa9BwZ&amp;controls=0&amp;autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=HXJEakm65FI&amp;playsinline=1&amp;rel=0&amp;modestbranding=1"
+        title="Background" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
     <div class="hero-overlay"></div>
     <div class="hero-grid"></div>
     <div class="wrap">
       <div class="hero-content">
         <div class="hero-eyebrow"><div class="hero-dot"></div><span>Owlbox LATAM</span></div>
-        <h1>Tu aliado de crecimiento</h1>
-        <h2>Tu inversión convertida en resultados reales.</h2>
-        <p class="hero-sub">Integramos datos, tecnología y creatividad en un sistema probado — operado por un equipo con más de 15 años de experiencia. Ningún peso invertido sin estrategia construida sobre datos reales.</p>
+        <h1>Tu aliado de<br>crecimiento</h1>
         <div class="hero-actions">
           <button class="btn" onclick="openCalendly()">Agendar llamada gratuita →</button>
-          <button class="btn btn-ghost" onclick="document.getElementById('servicios').scrollIntoView({behavior:'smooth'})">Ver servicios</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('tagline').scrollIntoView({behavior:'smooth'})">Ver más</button>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- TAGLINE SECTION: immediately below hero -->
+  <section class="tagline-section" id="tagline">
+    <div class="wrap">
+      <h2 class="tagline-h2 fade-up">Tu inversión convertida<br>en resultados reales.</h2>
+      <p class="tagline-p fade-up" style="transition-delay:.15s">
+        Integramos datos, tecnología y creatividad en un sistema probado — operado por un equipo con más de 15 años de experiencia. Ningún peso invertido sin estrategia construida sobre datos reales.
+      </p>
     </div>
   </section>
 
@@ -510,7 +633,7 @@ footer{padding:64px 0 36px}
           <div class="chart-title">Facturación mensual proyectada</div>
           <div class="chart-canvas-wrap"><svg class="chart-svg" id="chart1" viewBox="0 0 500 180" preserveAspectRatio="none"></svg></div>
           <div class="chart-legend">
-            <div class="legend-item"><div class="legend-dot" style="background:#ff421e"></div>Con recuperación de carritos</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ff421e"></div>Con recuperación</div>
             <div class="legend-item"><div class="legend-dot" style="background:rgba(245,244,240,.45)"></div>Sin recuperación</div>
           </div>
         </div>
@@ -537,7 +660,7 @@ footer{padding:64px 0 36px}
       <span class="tag-label">Nuestros servicios</span>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:end">
         <h2>Tres pilares,<br><span class="accent">un solo sistema.</span></h2>
-        <p style="max-width:380px;line-height:1.85;color:rgba(245,244,240,.65)">No ejecutamos sin diagnóstico. No prometemos lo que no controlamos. Cada pilar está integrado.</p>
+        <p style="max-width:380px;line-height:1.85;color:rgba(245,244,240,.65)">No ejecutamos sin diagnóstico. No prometemos lo que no controlamos.</p>
       </div>
       <div class="services-grid">
         <div class="svc-card" onclick="goPage('growth')">
@@ -549,13 +672,13 @@ footer{padding:64px 0 36px}
         <div class="svc-card" onclick="goPage('autos')">
           <span class="svc-num">02</span>
           <div class="svc-title">Automatizaciones para Ecommerce</div>
-          <p class="svc-desc">Sistema multicanal que genera ventas 24/7 sin que tengas que operar la tecnología.</p>
-          <div class="svc-tags"><span class="svc-tag">Email flows</span><span class="svc-tag">Carritos abandonados</span><span class="svc-tag">WhatsApp</span><span class="svc-tag">Retención</span><span class="svc-tag">Reactivación</span></div>
+          <p class="svc-desc">Sistema multicanal que genera ventas 24/7 sin operar la tecnología.</p>
+          <div class="svc-tags"><span class="svc-tag">Email flows</span><span class="svc-tag">Carritos</span><span class="svc-tag">WhatsApp</span><span class="svc-tag">Retención</span><span class="svc-tag">Reactivación</span></div>
         </div>
         <div class="svc-card">
           <span class="svc-num">03</span>
           <div class="svc-title">Creatividad</div>
-          <p class="svc-desc">Visión artística basada en datos y sensibilidad estética. Creativos que convierten.</p>
+          <p class="svc-desc">Visión artística basada en datos. Creativos que convierten, no que decoran.</p>
           <div class="svc-tags"><span class="svc-tag">Diseño</span><span class="svc-tag">Video</span><span class="svc-tag">Copy</span><span class="svc-tag">UGC</span></div>
         </div>
       </div>
@@ -591,30 +714,23 @@ footer{padding:64px 0 36px}
     </div>
   </section>
 
-  <!-- ══════════ OWL STICKY SCROLL ══════════ -->
+  <!-- OWL STICKY SCROLL SECTION -->
   <div id="owl-outer">
     <div id="owl-sticky">
       <div class="wrap" style="width:100%">
         <div class="owl-layout">
-
-          <!-- LEFT: SVG owl -->
           <div class="owl-left">
             <div id="owl-glow"></div>
             <div class="owl-svg-wrap">
               <svg id="owl-svg" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg" overflow="visible">
-                <!-- Ghost (always visible, subtle) -->
                 <path class="owl-ghost" d="M1054.27,541.27c0,68.24-12.54,132.25-37.04,190.43-24.64,58.03-61.97,111.84-111.11,159.66-34.12,33.24-71.15,61.09-109.79,82.82-38.78,21.73-80.34,37.91-123.65,48.12-16.33-46.66-29.31-90.55-38.64-130.5-4.52-19.68-8.46-40.1-11.96-60.95,52.05-12.1,98.57-38.78,138.37-79.47,28.43-29.02,50.01-61.39,64.16-96.23,14.14-34.85,21.43-73.2,21.43-113.88s-7.29-79.17-21.43-114.17c-14.14-35.14-35.72-67.8-64.16-97.26-28.14-28.87-59.34-51.03-93.46-65.76-1.6,1.02-3.06,2.19-4.52,3.21-73.05,53.8-103.38,119.71-103.38,119.71,0,0-37.04-71.01-105.27-124.81-1.31-1.02-2.77-2.19-4.08-3.06-3.65,1.46-7.29,2.92-10.79,4.37-34.41,14.73-66.2,37.04-94.34,66.34-28.14,29.45-49.58,62.11-63.57,97.26-14.14,34.99-21.29,73.49-21.29,114.17s7.14,79.03,21.29,113.88c14,34.85,35.43,67.22,63.57,96.23,43.89,45.05,96.23,73.05,155.29,83.11-1.75,19.54-3.94,38.79-6.42,57.3-5.54,42.14-13.56,88.51-23.91,137.79-51.03-7.87-99.59-23.47-144.5-46.37-44.76-23.04-87.19-53.8-125.98-91.86-48.99-47.83-86.17-101.63-110.67-159.66-24.5-58.18-36.89-122.19-36.89-190.43s12.39-132.39,36.89-190.72c24.5-58.32,61.68-112.42,110.67-160.68,48.85-48.26,103.38-85.01,161.99-109.21,58.61-24.2,122.92-36.45,191.16-36.45s132.69,12.25,191.3,36.45c58.76,24.2,113.44,60.95,162.58,109.21,49.14,48.26,86.47,102.36,111.11,160.68,24.5,58.32,37.04,122.48,37.04,190.72Z"/>
                 <path class="owl-ghost" d="M559,489.87l-46.46,35.23s-1.37,27.28,10.24,66.06c11.62,38.79,36.22,89.09,36.22,89.09,0,0,28.69-53.92,41.72-94.13,13.03-40.21,10.68-61.03,10.68-61.03l-52.4-35.23Z"/>
-                <!-- Animated draw paths -->
                 <path id="owl-d1" class="owl-draw" d="M1054.27,541.27c0,68.24-12.54,132.25-37.04,190.43-24.64,58.03-61.97,111.84-111.11,159.66-34.12,33.24-71.15,61.09-109.79,82.82-38.78,21.73-80.34,37.91-123.65,48.12-16.33-46.66-29.31-90.55-38.64-130.5-4.52-19.68-8.46-40.1-11.96-60.95,52.05-12.1,98.57-38.78,138.37-79.47,28.43-29.02,50.01-61.39,64.16-96.23,14.14-34.85,21.43-73.2,21.43-113.88s-7.29-79.17-21.43-114.17c-14.14-35.14-35.72-67.8-64.16-97.26-28.14-28.87-59.34-51.03-93.46-65.76-1.6,1.02-3.06,2.19-4.52,3.21-73.05,53.8-103.38,119.71-103.38,119.71,0,0-37.04-71.01-105.27-124.81-1.31-1.02-2.77-2.19-4.08-3.06-3.65,1.46-7.29,2.92-10.79,4.37-34.41,14.73-66.2,37.04-94.34,66.34-28.14,29.45-49.58,62.11-63.57,97.26-14.14,34.99-21.29,73.49-21.29,114.17s7.14,79.03,21.29,113.88c14,34.85,35.43,67.22,63.57,96.23,43.89,45.05,96.23,73.05,155.29,83.11-1.75,19.54-3.94,38.79-6.42,57.3-5.54,42.14-13.56,88.51-23.91,137.79-51.03-7.87-99.59-23.47-144.5-46.37-44.76-23.04-87.19-53.8-125.98-91.86-48.99-47.83-86.17-101.63-110.67-159.66-24.5-58.18-36.89-122.19-36.89-190.43s12.39-132.39,36.89-190.72c24.5-58.32,61.68-112.42,110.67-160.68,48.85-48.26,103.38-85.01,161.99-109.21,58.61-24.2,122.92-36.45,191.16-36.45s132.69,12.25,191.3,36.45c58.76,24.2,113.44,60.95,162.58,109.21,49.14,48.26,86.47,102.36,111.11,160.68,24.5,58.32,37.04,122.48,37.04,190.72Z"/>
                 <path id="owl-d2" class="owl-draw" d="M559,489.87l-46.46,35.23s-1.37,27.28,10.24,66.06c11.62,38.79,36.22,89.09,36.22,89.09,0,0,28.69-53.92,41.72-94.13,13.03-40.21,10.68-61.03,10.68-61.03l-52.4-35.23Z"/>
-                <!-- Travelling dot -->
                 <circle id="owl-ldot" r="7" fill="rgba(230,210,255,0.95)"/>
               </svg>
             </div>
           </div>
-
-          <!-- RIGHT: sliding texts -->
           <div class="owl-right">
             <div class="owl-header">
               <span class="tag-label">Lo que nos hace únicos</span>
@@ -622,38 +738,37 @@ footer{padding:64px 0 36px}
             </div>
             <div class="owl-text-stage">
               
-      <div class="owl-slide">
-        <span class="owl-slide-num">01</span>
-        <h3 class="owl-slide-title">Metodología propia</h3>
-        <p class="owl-slide-desc">El Método FIRE! ordena todo el trabajo. Etapas definidas, entregables concretos y lógica de optimización propia.</p>
-      </div>
-      <div class="owl-slide">
-        <span class="owl-slide-num">02</span>
-        <h3 class="owl-slide-title">Research obligatorio</h3>
-        <p class="owl-slide-desc">Ningún peso se invierte en pauta sin diagnóstico previo. Estructural, no opcional.</p>
-      </div>
-      <div class="owl-slide">
-        <span class="owl-slide-num">03</span>
-        <h3 class="owl-slide-title">Tres capacidades integradas</h3>
-        <p class="owl-slide-desc">Creatividad + tecnología + performance en un mismo equipo. Sin tercerización.</p>
-      </div>
-      <div class="owl-slide">
-        <span class="owl-slide-num">04</span>
-        <h3 class="owl-slide-title">Seniority real</h3>
-        <p class="owl-slide-desc">Especialistas con más de 15 años en el nicho. Roles específicos por cuenta.</p>
-      </div>
-      <div class="owl-slide">
-        <span class="owl-slide-num">05</span>
-        <h3 class="owl-slide-title">Early adopter tecnológico</h3>
-        <p class="owl-slide-desc">IA, automatización y nuevas plataformas incorporadas antes que la competencia.</p>
-      </div>
-      <div class="owl-slide">
-        <span class="owl-slide-num">06</span>
-        <h3 class="owl-slide-title">Comunicación en dinero</h3>
-        <p class="owl-slide-desc">Reportes en ROAS, CPL y facturación — nunca en clics o impresiones.</p>
-      </div>
+              <div class="owl-slide">
+                <span class="owl-slide-num">01</span>
+                <h3 class="owl-slide-title">Metodología propia</h3>
+                <p class="owl-slide-desc">El Método FIRE! ordena todo el trabajo. Etapas definidas, entregables concretos y lógica de optimización propia.</p>
+              </div>
+              <div class="owl-slide">
+                <span class="owl-slide-num">02</span>
+                <h3 class="owl-slide-title">Research obligatorio</h3>
+                <p class="owl-slide-desc">Ningún peso se invierte en pauta sin diagnóstico previo. Estructural, no opcional.</p>
+              </div>
+              <div class="owl-slide">
+                <span class="owl-slide-num">03</span>
+                <h3 class="owl-slide-title">Tres capacidades integradas</h3>
+                <p class="owl-slide-desc">Creatividad + tecnología + performance en un mismo equipo. Sin tercerización.</p>
+              </div>
+              <div class="owl-slide">
+                <span class="owl-slide-num">04</span>
+                <h3 class="owl-slide-title">Seniority real</h3>
+                <p class="owl-slide-desc">Especialistas con más de 15 años en el nicho. Roles específicos por cuenta.</p>
+              </div>
+              <div class="owl-slide">
+                <span class="owl-slide-num">05</span>
+                <h3 class="owl-slide-title">Early adopter tecnológico</h3>
+                <p class="owl-slide-desc">IA, automatización y nuevas plataformas incorporadas antes que la competencia.</p>
+              </div>
+              <div class="owl-slide">
+                <span class="owl-slide-num">06</span>
+                <h3 class="owl-slide-title">Comunicación en dinero</h3>
+                <p class="owl-slide-desc">Reportes en ROAS, CPL y facturación — nunca en clics o impresiones.</p>
+              </div>
             </div>
-            <!-- Progress dots -->
             <div class="owl-dots" id="owl-dots">
               <div class="owl-dot-ind active"></div>
               <div class="owl-dot-ind"></div>
@@ -663,12 +778,10 @@ footer{padding:64px 0 36px}
               <div class="owl-dot-ind"></div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
   </div>
-  <!-- ════════════════════════════════════════ -->
 
   <!-- MANIFESTO -->
   <section class="manifesto-section">
@@ -701,7 +814,7 @@ footer{padding:64px 0 36px}
     <div class="breadcrumb"><button onclick="goHome()">Inicio</button><span style="color:var(--muted)">/</span><span style="color:var(--muted)">Librería de Automatizaciones</span></div>
     <span class="tag-label">Servicio 02</span>
     <h1>Librería de<br><span class="accent">Automatizaciones<br>para Ecommerce</span></h1>
-    <p style="font-size:15px;max-width:540px;margin:20px 0 36px;line-height:1.85;color:rgba(245,244,240,.65)">7 de cada 10 carritos no llegan al pago. El email los recupera apenas un 2%. Nuestro sistema multicanal recupera entre el 15% y el 30%, en automático.</p>
+    <p style="font-size:15px;max-width:540px;margin:20px 0 36px;line-height:1.85;color:rgba(245,244,240,.65)">7 de cada 10 carritos no llegan al pago. Nuestro sistema multicanal recupera entre el 15% y el 30%, en automático.</p>
     <button class="btn" onclick="openCalendly()">Hablar con un especialista →</button>
   </div></div></section>
   <section class="section"><div class="wrap">
@@ -727,9 +840,9 @@ footer{padding:64px 0 36px}
     <span class="tag-label">La librería</span><h2>Módulos activables <span class="accent">según tu necesidad.</span></h2>
     <div class="feature-list">
       <div class="feature-row"><span class="feat-idx">01</span><div><div class="feat-name">Recuperación de carritos</div><p class="feat-txt">Secuencia multicanal con hasta 5 puntos de contacto. 15–30% de recuperación.</p></div><p class="feat-txt">Setup en 48 hs. Compatible con Tienda Nube, Shopify, WooCommerce y VTEX.</p></div>
-      <div class="feature-row"><span class="feat-idx">02</span><div><div class="feat-name">Bienvenida & onboarding</div><p class="feat-txt">Las primeras 72 horas son críticas para la retención a largo plazo.</p></div><p class="feat-txt">5 a 7 mensajes que generan confianza y llevan al primer comportamiento deseado.</p></div>
-      <div class="feature-row"><span class="feat-idx">03</span><div><div class="feat-name">Reactivación de inactivos</div><p class="feat-txt">Clientes que no compran hace 60, 90 o 120 días reactivados con mensajes personalizados.</p></div><p class="feat-txt">Segmentación por RFM y A/B testing.</p></div>
-      <div class="feature-row"><span class="feat-idx">04</span><div><div class="feat-name">Post-venta & retención</div><p class="feat-txt">NPS, reseñas, cross-sell inteligente y programa de referidos integrado.</p></div><p class="feat-txt">Fideliza al cliente en el momento correcto del ciclo de compra.</p></div>
+      <div class="feature-row"><span class="feat-idx">02</span><div><div class="feat-name">Bienvenida & onboarding</div><p class="feat-txt">Las primeras 72 horas son críticas para la retención.</p></div><p class="feat-txt">5 a 7 mensajes que generan confianza y llevan al primer comportamiento deseado.</p></div>
+      <div class="feature-row"><span class="feat-idx">03</span><div><div class="feat-name">Reactivación de inactivos</div><p class="feat-txt">Clientes que no compran hace 60–120 días reactivados con mensajes personalizados.</p></div><p class="feat-txt">Segmentación por RFM y A/B testing.</p></div>
+      <div class="feature-row"><span class="feat-idx">04</span><div><div class="feat-name">Post-venta & retención</div><p class="feat-txt">NPS, reseñas, cross-sell inteligente y programa de referidos.</p></div><p class="feat-txt">Fideliza al cliente en el momento correcto del ciclo de compra.</p></div>
     </div>
     <div class="pricing-note"><div><div class="pn-label">Garantía de activación</div><div class="pn-text">Sistema activo en 15 días hábiles o devolvemos el 100% del setup.</div></div><button class="btn" onclick="openCalendly()">Consultar mi caso →</button></div>
   </div></section>
@@ -739,14 +852,14 @@ footer{padding:64px 0 36px}
       <div class="why-card"><span class="why-icon">TN</span><div class="why-title">Tienda Nube</div><p class="why-txt">Integración nativa con n8n + ManyChat. Setup en 48 horas.</p></div>
       <div class="why-card"><span class="why-icon">S</span><div class="why-title">Shopify & Plus</div><p class="why-txt">Klaviyo y Omnisend. Flows avanzados email + WhatsApp + SMS.</p></div>
       <div class="why-card"><span class="why-icon">W</span><div class="why-title">WooCommerce</div><p class="why-txt">Via webhooks con ActiveCampaign, Mailchimp y WhatsApp Business.</p></div>
-      <div class="why-card"><span class="why-icon">+</span><div class="why-title">Plataformas custom</div><p class="why-txt">Integración via API. Sin compromiso.</p></div>
+      <div class="why-card"><span class="why-icon">+</span><div class="why-title">Plataformas custom</div><p class="why-txt">Integración via API. Evaluamos cada caso sin compromiso.</p></div>
     </div>
   </div></section>
   <div class="cta-band"><div class="wrap"><div class="cta-row">
     <div><span class="tag-label">¿Cuánto estás dejando ir?</span><h2>Calculá tu potencial<br>de recuperación.</h2><p style="margin-top:12px;color:rgba(245,244,240,.65)">En 30 minutos estimamos cuánto revenue podés recuperar.</p></div>
     <button class="btn" style="font-size:15px;padding:16px 36px" onclick="openCalendly()">Agendar llamada →</button>
   </div></div></div>
-</div><!-- /autos -->
+</div>
 
 <!-- FOOTER -->
 <footer><div class="wrap">
@@ -760,89 +873,239 @@ footer{padding:64px 0 36px}
 </div></footer>
 
 <script>
-// ── NAVIGATION ─────────────────────────────────────
+// ══════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════
 let growthLoaded = false;
 function goPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
-  if(id==='growth' && !growthLoaded){ growthLoaded=true; document.getElementById('growth-iframe').src='growth_styled.html'; }
+  if (id === 'growth' && !growthLoaded) {
+    growthLoaded = true;
+    document.getElementById('growth-iframe').src = 'growth_styled.html';
+  }
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function goHome() { goPage('home') }
-function openCalendly() { window.open('https://calendly.com/owlbox/llamada','_blank') }
+function goHome() { goPage('home'); }
+function openCalendly() { window.open('https://calendly.com/owlbox/llamada','_blank'); }
 
-// ── CURSOR ──────────────────────────────────────────
-const dot=document.getElementById('cur-dot'),trail=document.getElementById('cur-trail');
-let isTouch=false;
-document.addEventListener('touchstart',()=>{isTouch=true},{once:true,passive:true});
-document.addEventListener('mousemove',e=>{
-  if(isTouch)return;
-  dot.style.left=e.clientX+'px';dot.style.top=e.clientY+'px';
-  trail.style.left=e.clientX+'px';trail.style.top=e.clientY+'px';
+// ══════════════════════════════════════════════════
+// CURSOR — desktop only (hover:hover media)
+// ══════════════════════════════════════════════════
+const curDot   = document.getElementById('cur-dot');
+const curTrail = document.getElementById('cur-trail');
+const owlEl    = document.getElementById('owl-cursor');
+
+// Detect touch
+let isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+document.addEventListener('touchstart', () => { isTouch = true; }, {once:true, passive:true});
+
+if (!isTouch) {
+  document.addEventListener('mousemove', e => {
+    const x = e.clientX, y = e.clientY;
+    // Show cursor elements
+    curDot.style.opacity   = '1';
+    curTrail.style.opacity = '1';
+    curDot.style.left   = x + 'px';
+    curDot.style.top    = y + 'px';
+    curTrail.style.left = x + 'px';
+    curTrail.style.top  = y + 'px';
+    // Owl cursor follows with slight lag via CSS transition
+    owlEl.style.left = (x - 11) + 'px';
+    owlEl.style.top  = (y - 11) + 'px';
+  });
+
+  // Scale dot on interactive elements
+  document.querySelectorAll('button, a, .svc-card, .result-card, .logo-chip').forEach(el => {
+    el.addEventListener('mouseenter', () => { curDot.style.transform = 'translate(-50%,-50%) scale(2)'; });
+    el.addEventListener('mouseleave', () => { curDot.style.transform = 'translate(-50%,-50%) scale(1)'; });
+  });
+}
+
+// ══════════════════════════════════════════════════
+// OWL FLYING CURSOR SPRITE — random idle flight
+// then chases mouse
+// ══════════════════════════════════════════════════
+(function owlFly() {
+  if (isTouch) { owlEl.style.display = 'none'; return; }
+
+  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  let ox = Math.random() * window.innerWidth;
+  let oy = Math.random() * window.innerHeight;
+  let vx = (Math.random() - 0.5) * 2;
+  let vy = (Math.random() - 0.5) * 2;
+
+  // Mode: 'idle' = random wander, 'chase' = follow cursor
+  let mode = 'idle';
+  let lastMouseMove = 0;
+  let chaseTimer = null;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX;
+    my = e.clientY;
+    lastMouseMove = Date.now();
+    if (mode !== 'chase') {
+      mode = 'chase';
+      clearTimeout(chaseTimer);
+      // Return to idle after 2.5s of no movement
+      chaseTimer = setTimeout(() => { mode = 'idle'; }, 2500);
+    }
+  });
+
+  owlEl.style.opacity  = '1';
+  owlEl.style.position = 'fixed';
+  owlEl.style.transition = 'none'; // raw JS animation
+
+  let lastFrame = 0;
+  function frame(ts) {
+    const dt = Math.min((ts - lastFrame) / 16.67, 3); // cap at 3× for tab switch
+    lastFrame = ts;
+
+    if (mode === 'idle') {
+      // Random wander with slight drift
+      vx += (Math.random() - 0.5) * 0.15 * dt;
+      vy += (Math.random() - 0.5) * 0.15 * dt;
+      // Speed cap
+      const spd = Math.sqrt(vx*vx+vy*vy);
+      if (spd > 1.8) { vx = (vx/spd)*1.8; vy = (vy/spd)*1.8; }
+      // Soft bounce off edges
+      if (ox < 30)  { vx = Math.abs(vx);  }
+      if (ox > window.innerWidth  - 30) { vx = -Math.abs(vx); }
+      if (oy < 30)  { vy = Math.abs(vy);  }
+      if (oy > window.innerHeight - 30) { vy = -Math.abs(vy); }
+      ox += vx * dt;
+      oy += vy * dt;
+    } else {
+      // Chase: lerp toward mouse with slight overshoot
+      const dx = mx - ox, dy = my - oy;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist > 2) {
+        const spd = Math.min(dist * 0.08, 6);
+        vx = (dx/dist) * spd;
+        vy = (dy/dist) * spd;
+        ox += vx * dt;
+        oy += vy * dt;
+      }
+    }
+
+    // Tilt the owl in its direction of travel
+    const angle = Math.atan2(vy, vx) * 180 / Math.PI;
+    owlEl.style.left      = (ox - 11) + 'px';
+    owlEl.style.top       = (oy - 11) + 'px';
+    owlEl.style.transform = 'rotate(' + (angle - 90) + 'deg)';
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+// ══════════════════════════════════════════════════
+// HEADER SCROLL
+// ══════════════════════════════════════════════════
+const hdr = document.getElementById('hdr');
+window.addEventListener('scroll', () => {
+  hdr.classList.toggle('scrolled', window.scrollY > 30);
+}, {passive:true});
+
+// ══════════════════════════════════════════════════
+// HAMBURGER
+// ══════════════════════════════════════════════════
+const burger  = document.getElementById('burger');
+const mobMenu = document.getElementById('mob-menu');
+let mobOpen   = false;
+function closeMob() {
+  mobOpen = false;
+  burger.classList.remove('open');
+  mobMenu.classList.remove('open');
+  hdr.style.opacity       = '';
+  hdr.style.pointerEvents = '';
+}
+burger.addEventListener('click', () => {
+  mobOpen = !mobOpen;
+  burger.classList.toggle('open', mobOpen);
+  mobMenu.classList.toggle('open', mobOpen);
+  hdr.style.opacity       = mobOpen ? '0' : '';
+  hdr.style.pointerEvents = mobOpen ? 'none' : '';
 });
-document.querySelectorAll('button,a,.svc-card,.result-card,.logo-chip,.owl-dot-ind').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{dot.style.transform='translate(-50%,-50%) scale(2)'});
-  el.addEventListener('mouseleave',()=>{dot.style.transform='translate(-50%,-50%) scale(1)'});
+document.addEventListener('click', e => {
+  if (mobOpen && !burger.contains(e.target) && !mobMenu.contains(e.target)) closeMob();
 });
 
-// ── HEADER ──────────────────────────────────────────
-const hdr=document.getElementById('hdr');
-window.addEventListener('scroll',()=>{hdr.classList.toggle('scrolled',window.scrollY>30)},{passive:true});
+// ══════════════════════════════════════════════════
+// FADE-UP ON SCROLL (tagline section)
+// ══════════════════════════════════════════════════
+const fadeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, {threshold: 0.2});
+document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
 
-// ── HAMBURGER ───────────────────────────────────────
-const burger=document.getElementById('burger'),mobMenu=document.getElementById('mob-menu');
-let mobOpen=false;
-function closeMob(){mobOpen=false;burger.classList.remove('open');mobMenu.classList.remove('open');hdr.style.opacity='';hdr.style.pointerEvents='';}
-burger.addEventListener('click',()=>{mobOpen=!mobOpen;burger.classList.toggle('open',mobOpen);mobMenu.classList.toggle('open',mobOpen);hdr.style.opacity=mobOpen?'0':'';hdr.style.pointerEvents=mobOpen?'none':'';;});
-document.addEventListener('click',e=>{if(mobOpen&&!burger.contains(e.target)&&!mobMenu.contains(e.target))closeMob();});
-
-// ── CHARTS ──────────────────────────────────────────
-function buildCharts(){
-  const months=['May','Jun','Jul','Ago','Sep','Oct','Nov','Dic','Ene','Feb','Mar','Abr','May'];
-  const base=[80,86,93,89,97,104,110,100,112,117,122,120,127];
-  const withR=base.map(v=>Math.round(v*1.22));
-  let acc=0; const cum=base.map((v,i)=>{acc+=withR[i]-v;return acc;});
-  function pt(data,W,H,P){const mn=Math.min(...data)*.88,mx=Math.max(...data)*1.06,xS=(W-P*2)/(data.length-1),yS=(H-P*2)/(mx-mn);return data.map((v,i)=>(i===0?'M':'L')+(P+i*xS).toFixed(1)+','+(H-P-(v-mn)*yS).toFixed(1)).join(' ');}
+// ══════════════════════════════════════════════════
+// CHARTS
+// ══════════════════════════════════════════════════
+function buildCharts() {
+  const months = ['May','Jun','Jul','Ago','Sep','Oct','Nov','Dic','Ene','Feb','Mar','Abr','May'];
+  const base   = [80,86,93,89,97,104,110,100,112,117,122,120,127];
+  const withR  = base.map(v => Math.round(v * 1.22));
+  let acc = 0;
+  const cum = base.map((v,i) => { acc += withR[i]-v; return acc; });
+  function pt(d,W,H,P) {
+    const mn=Math.min(...d)*.88,mx=Math.max(...d)*1.06,xS=(W-P*2)/(d.length-1),yS=(H-P*2)/(mx-mn);
+    return d.map((v,i)=>(i===0?'M':'L')+(P+i*xS).toFixed(1)+','+(H-P-(v-mn)*yS).toFixed(1)).join(' ');
+  }
   function ar(p,W,H,P){const s=p.split(' '),lx=s[s.length-1].replace('L','').split(',')[0],fx=s[0].replace('M','').split(',')[0];return p+' L'+lx+','+(H-P)+' L'+fx+','+(H-P)+' Z';}
   function lb(m,W,H,P){return m.map((v,i)=>'<text x="'+(P+i*(W-P*2)/(m.length-1))+'" y="'+(H-2)+'" text-anchor="middle" font-size="9" fill="rgba(245,244,240,.28)" font-family="DM Mono">'+v+'</text>').join('');}
   const W=500,H=180,P=18,p1=pt(base,W,H,P),p2=pt(withR,W,H,P),pc=pt(cum,W,H,P);
-  document.getElementById('chart1').innerHTML='<defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff421e" stop-opacity=".22"/><stop offset="100%" stop-color="#ff421e" stop-opacity="0"/></linearGradient><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(245,244,240,.1)"/><stop offset="100%" stop-color="rgba(245,244,240,0)"/></linearGradient></defs><path d="'+ar(p1,W,H,P)+'" fill="url(#gb)"/><path d="'+p1+'" stroke="rgba(245,244,240,.5)" stroke-width="2" fill="none" stroke-dasharray="5,3"/><path d="'+ar(p2,W,H,P)+'" fill="url(#ga)"/><path d="'+p2+'" stroke="#ff421e" stroke-width="2.5" fill="none"/>'+lb(months,W,H,P);
-  document.getElementById('chart2').innerHTML='<defs><linearGradient id="gc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0EA5E9" stop-opacity=".28"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0"/></linearGradient></defs><path d="'+ar(pc,W,H,P)+'" fill="url(#gc)"/><path d="'+pc+'" stroke="#0EA5E9" stroke-width="2.5" fill="none"/>'+lb(months,W,H,P);
+  document.getElementById('chart1').innerHTML=
+    '<defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff421e" stop-opacity=".22"/><stop offset="100%" stop-color="#ff421e" stop-opacity="0"/></linearGradient>'+
+    '<linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(245,244,240,.1)"/><stop offset="100%" stop-color="rgba(245,244,240,0)"/></linearGradient></defs>'+
+    '<path d="'+ar(p1,W,H,P)+'" fill="url(#gb)"/>'+
+    '<path d="'+p1+'" stroke="rgba(245,244,240,.5)" stroke-width="2" fill="none" stroke-dasharray="5,3"/>'+
+    '<path d="'+ar(p2,W,H,P)+'" fill="url(#ga)"/>'+
+    '<path d="'+p2+'" stroke="#ff421e" stroke-width="2.5" fill="none"/>'+lb(months,W,H,P);
+  document.getElementById('chart2').innerHTML=
+    '<defs><linearGradient id="gc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0EA5E9" stop-opacity=".28"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0"/></linearGradient></defs>'+
+    '<path d="'+ar(pc,W,H,P)+'" fill="url(#gc)"/>'+
+    '<path d="'+pc+'" stroke="#0EA5E9" stroke-width="2.5" fill="none"/>'+lb(months,W,H,P);
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',buildCharts);
+if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', buildCharts);
 else buildCharts();
 
 // ══════════════════════════════════════════════════
 // OWL STICKY SCROLL ENGINE
 // ══════════════════════════════════════════════════
-(function owlEngine(){
-  const ITEMS = 6;
-  const isMobile = () => window.innerWidth <= 960;
+(function owlEngine() {
+  const ITEMS   = 6;
+  const outer   = document.getElementById('owl-outer');
+  const sticky  = document.getElementById('owl-sticky');
+  const draw1   = document.getElementById('owl-d1');
+  const draw2   = document.getElementById('owl-d2');
+  const ldot    = document.getElementById('owl-ldot');
+  const glowEl  = document.getElementById('owl-glow');
+  const owlSvg  = document.getElementById('owl-svg');
+  const slides  = document.querySelectorAll('.owl-slide');
+  const dotInds = document.querySelectorAll('.owl-dot-ind');
 
-  const outer  = document.getElementById('owl-outer');
-  const draw1  = document.getElementById('owl-d1');
-  const draw2  = document.getElementById('owl-d2');
-  const ldot   = document.getElementById('owl-ldot');
-  const glowEl = document.getElementById('owl-glow');
-  const slides = document.querySelectorAll('.owl-slide');
-  const dotInds= document.querySelectorAll('.owl-dot-ind');
+  if (!outer || !draw1) return;
 
-  if(!outer || !draw1) return;
+  // ── Mobile: show all slides statically, no sticky ──
+  function isMobile() { return window.innerWidth <= 960; }
 
-  // — Mobile: show all slides statically —
-  if(isMobile()){
-    slides.forEach(s=>{s.style.opacity='1';s.style.transform='none';s.style.position='relative';});
-    return;
+  function setupMobile() {
+    slides.forEach(s => {
+      s.style.cssText = 'position:relative;top:auto;left:auto;right:auto;opacity:1;transform:none;pointer-events:auto;margin-bottom:32px;';
+    });
   }
+
+  if (isMobile()) { setupMobile(); return; }
 
   let len1=0, len2=0, totalLen=0, inited=false;
 
-  function init(){
-    if(inited) return;
-    inited=true;
-    len1 = draw1.getTotalLength();
-    len2 = draw2.getTotalLength();
-    totalLen = len1 + len2;
+  function init() {
+    if (inited) return;
+    inited = true;
+    len1      = draw1.getTotalLength();
+    len2      = draw2.getTotalLength();
+    totalLen  = len1 + len2;
     draw1.style.strokeDasharray  = len1;
     draw1.style.strokeDashoffset = len1;
     draw2.style.strokeDasharray  = len2;
@@ -850,83 +1113,81 @@ else buildCharts();
     ldot.style.opacity = '0';
   }
 
-  // smoothstep easing
-  function ss(t){ t=Math.max(0,Math.min(1,t)); return t*t*(3-2*t); }
+  // smoothstep
+  function ss(t) { t=Math.max(0,Math.min(1,t)); return t*t*(3-2*t); }
 
-  function update(){
+  function update() {
+    if (isMobile()) return;
+
     const rect   = outer.getBoundingClientRect();
     const outerH = outer.offsetHeight;
     const winH   = window.innerHeight;
 
-    // scrolled: 0 = section just entered viewport top
-    //           1 = section bottom just left viewport bottom
+    // scrolled: 0→1 through the outer container
     const scrolled = Math.max(0, Math.min(1, -rect.top / (outerH - winH)));
 
-    if(scrolled <= 0 && !inited) return;
+    if (scrolled <= 0) return;
     init();
 
-    // ── SVG DRAW (scroll-synced) ──────────────────
-    const drawn = scrolled * totalLen;
+    // ── 1. Reveal ghost first ─────────────────────
+    if (scrolled > 0) {
+      owlSvg.closest('.owl-svg-wrap').parentElement.classList.add('drawing-started');
+    }
 
-    const off1 = Math.max(0, len1 - drawn);
+    // ── 2. Draw paths ─────────────────────────────
+    const drawn  = scrolled * totalLen;
+    const off1   = Math.max(0, len1 - drawn);
     draw1.style.strokeDashoffset = off1;
 
     const drawn2 = Math.max(0, drawn - len1 * 0.85);
     draw2.style.strokeDashoffset = Math.max(0, len2 - drawn2);
 
-    // ── LIGHT DOT ────────────────────────────────
-    if(scrolled > 0 && scrolled < 1){
+    // ── 3. Light dot ──────────────────────────────
+    if (scrolled > 0.01 && scrolled < 0.99) {
       ldot.style.opacity = '1';
       try {
         let p;
-        if(drawn <= len1){
-          p = draw1.getPointAtLength(Math.min(Math.max(drawn,1), len1-1));
+        const safeD1 = Math.min(Math.max(drawn, 1), len1 - 1);
+        const safeD2 = Math.min(Math.max(drawn - len1, 1), len2 - 1);
+        if (drawn <= len1) {
+          p = draw1.getPointAtLength(safeD1);
         } else {
-          p = draw2.getPointAtLength(Math.min(Math.max(drawn-len1,1), len2-1));
+          p = draw2.getPointAtLength(safeD2);
         }
         ldot.setAttribute('cx', p.x);
         ldot.setAttribute('cy', p.y);
-      } catch(e){}
+      } catch(e) {}
     } else {
       ldot.style.opacity = '0';
     }
 
-    // ── GLOW ─────────────────────────────────────
-    const gA = Math.min(scrolled * 0.5, 0.32);
+    // ── 4. Glow intensifies with progress ─────────
+    const gA = Math.min(scrolled * 0.55, 0.35);
+    const gB = gA * 0.3;
     glowEl.style.background =
-      'radial-gradient(circle,rgba(107,33,168,'+gA+') 0%,rgba(107,33,168,'+gA*0.3+') 35%,transparent 70%)';
+      'radial-gradient(circle,rgba(107,33,168,'+gA+') 0%,rgba(107,33,168,'+gB+') 35%,transparent 70%)';
 
-    // ── TEXT SLIDES ───────────────────────────────
-    // Each of 6 items occupies 1/6 of the scroll range
-    // Item i: active from i/6 to (i+1)/6
-    // Fade zone: 18% of each segment at start and end
-    const seg = 1 / ITEMS;
-    const FADE = 0.20; // fraction of segment for fade in/out
-
-    let activeIndex = -1;
+    // ── 5. Text slides ─────────────────────────────
+    const seg  = 1 / ITEMS;
+    const FADE = 0.20;
+    let activeIdx = -1;
 
     slides.forEach((slide, i) => {
       const start = i * seg;
       const end   = start + seg;
       let op = 0, ty = 0;
 
-      if(scrolled >= start && scrolled < end){
-        const local = (scrolled - start) / seg; // 0→1 within segment
-        activeIndex = i;
-
-        if(local < FADE){
-          // fade IN — rise up from below
+      if (scrolled >= start && scrolled < end) {
+        activeIdx = i;
+        const local = (scrolled - start) / seg;
+        if (local < FADE) {
           const t = ss(local / FADE);
-          op = t;
-          ty = 22 * (1 - t);
-        } else if(local > (1 - FADE)){
-          // fade OUT — exit upward
-          const t = ss((local - (1-FADE)) / FADE);
-          op = 1 - t;
-          ty = -16 * t;
+          op = t; ty = 22 * (1 - t);
+        } else if (local > 1 - FADE) {
+          const t = ss((local - (1 - FADE)) / FADE);
+          op = 1 - t; ty = -16 * t;
         } else {
-          op = 1;
-          ty = 0;
+          op = 1; ty = 0;
         }
       }
 
@@ -934,27 +1195,27 @@ else buildCharts();
       slide.style.transform = 'translateY(' + ty + 'px)';
     });
 
-    // ── PROGRESS DOTS ─────────────────────────────
-    dotInds.forEach((d,i) => {
-      d.classList.toggle('active', i === activeIndex);
+    // ── 6. Progress dots ──────────────────────────
+    dotInds.forEach((d, i) => {
+      d.classList.toggle('active', i === activeIdx);
     });
   }
 
-  // RAF scroll loop
+  // Throttled scroll handler
   let ticking = false;
-  window.addEventListener('scroll',()=>{
-    if(!ticking){
-      requestAnimationFrame(()=>{ update(); ticking=false; });
-      ticking=true;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => { update(); ticking = false; });
+      ticking = true;
     }
-  },{passive:true});
+  }, {passive:true});
 
-  // Also run on resize
-  window.addEventListener('resize', update, {passive:true});
+  window.addEventListener('resize', () => {
+    if (isMobile()) setupMobile();
+    else update();
+  }, {passive:true});
 
-  // Initial render
   requestAnimationFrame(update);
-
 })();
 </script>
 </body>
