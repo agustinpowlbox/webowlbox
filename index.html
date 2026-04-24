@@ -163,7 +163,7 @@ nav{display:flex;align-items:center;gap:32px}
   width:177.78vh;height:100vh;
   min-width:100vw;min-height:56.25vw;
   transform:translate(-50%,-50%);
-  pointer-events:none;mix-blend-mode:multiply;opacity:.5;border:none
+  pointer-events:none;mix-blend-mode:multiply;opacity:.2;border:none
 }
 .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,rgba(39,11,61,.55) 0%,rgba(10,10,10,.35) 100%)}
 .hero-grid{
@@ -173,9 +173,11 @@ nav{display:flex;align-items:center;gap:32px}
 }
 .hero-content{
   position:relative;z-index:2;
-  /* Tálamo style: bottom-left, generous bottom padding */
   padding:0 0 80px 0;
   width:100%;
+  /* Left-aligned like reference image */
+  text-align:left;
+  max-width:780px; /* don't stretch full width */
 }
 .hero-eyebrow{
   display:inline-flex;align-items:center;gap:10px;
