@@ -1127,16 +1127,14 @@
     /* Ghost path: invisible until drawing starts (opacity 0) */
     .owl-ghost {
       fill: none;
-      stroke: rgba(200, 180, 255, 0);
-      /* fully transparent initially */
+      stroke: transparent;
       stroke-width: 1.2;
       stroke-miterlimit: 10;
-      transition: stroke .8s ease;
     }
 
-    /* When drawing has started, ghost becomes subtle */
+    /* Ghost stays invisible even after drawing starts — surprise effect */
     .drawing-started .owl-ghost {
-      stroke: rgba(200, 180, 255, .08);
+      stroke: transparent;
     }
 
     /* Draw path: the stroke that grows */
@@ -1745,7 +1743,7 @@
       }
 
       .owl-ghost {
-        stroke: rgba(200, 180, 255, .12) !important
+        stroke: transparent !important
       }
     }
 
@@ -2433,10 +2431,7 @@
     <section class="section" id="servicios">
       <div class="wrap">
         <span class="tag-label">Nuestros servicios</span>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:end">
-          <h2>Tres pilares,<br><span class="accent">un solo sistema.</span></h2>
-      
-        </div>
+        <h2>Tres pilares,<br><span class="accent">un solo sistema.</span></h2>
         <div class="services-grid">
           <div class="svc-card" onclick="goPage('growth')">
             <span class="svc-num">01</span>
